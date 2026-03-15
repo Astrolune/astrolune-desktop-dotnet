@@ -10,7 +10,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <FrontendRoot>$(ProjectDir)..\frontend\</FrontendRoot>
+    <FrontendRoot Condition="Exists('$(ProjectDir)..\Astrolune.React\')">$(ProjectDir)..\Astrolune.React\</FrontendRoot>
+    <FrontendRoot Condition="'$(FrontendRoot)'==''">$(ProjectDir)..\frontend\</FrontendRoot>
     <FrontendDist>$(FrontendRoot)dist\index.html</FrontendDist>
     <FrontendNodeModules>$(FrontendRoot)node_modules</FrontendNodeModules>
     <AstroluneDevServerUrl>http://localhost:5173</AstroluneDevServerUrl>
@@ -38,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\frontend\dist\**\*.*" Link="frontend\%(RecursiveDir)%(Filename)%(Extension)">
+    <Content Include="$(FrontendRoot)dist\**\*.*" Link="frontend\%(RecursiveDir)%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
