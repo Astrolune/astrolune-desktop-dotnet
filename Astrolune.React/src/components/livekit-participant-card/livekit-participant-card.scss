@@ -1,0 +1,234 @@
+.lk-participant-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:hover {
+    .lk-participant-card__actions {
+      opacity: 1;
+    }
+  }
+
+  &--speaking {
+    border-color: #00d4ff;
+  }
+
+  &--pinned {
+    border-color: #00d4ff;
+  }
+
+  &--expanded {
+    width: 100%;
+    height: 100%;
+  }
+
+  &--screen-sharing {
+    .lk-participant-card__video {
+      background: #000;
+    }
+  }
+
+  // Size variants
+  &--small {
+    min-width: 120px;
+    height: 90px;
+
+    .lk-participant-card__name {
+      font-size: 11px;
+    }
+
+    .lk-participant-card__indicators {
+      gap: 4px;
+    }
+  }
+
+  &--medium {
+    aspect-ratio: 16 / 9;
+    min-height: 180px;
+  }
+
+  &--large {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__speaking-border {
+    position: absolute;
+    inset: -1px;
+    border-radius: 12px;
+    border: 2px solid #00d4ff;
+    pointer-events: none;
+    z-index: 1; // Set z-index to 1 to not overlap modals
+    transition: opacity 0.15s ease;
+  }
+
+  &__video {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__avatar-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    border: 2px solid rgba(0, 212, 255, 0.2);
+    color: rgba(255, 255, 255, 0.6);
+
+    .lk-participant-card--small & {
+      width: 40px;
+      height: 40px;
+    }
+
+    .lk-participant-card--large & {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 212, 255, 0.2);
+      border-color: rgba(0, 212, 255, 0.4);
+      color: #00d4ff;
+    }
+
+    &--active {
+      background: rgba(0, 212, 255, 0.2);
+      border-color: #00d4ff;
+      color: #00d4ff;
+    }
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+  }
+
+  &__name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__local-badge {
+    font-size: 10px;
+    color: #00d4ff;
+    opacity: 0.8;
+  }
+
+  &__indicators {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__quality {
+    display: flex;
+    align-items: center;
+    
+    &--excellent,
+    &--good {
+      color: #00d4ff;
+    }
+
+    &--poor {
+      color: #ff6b6b;
+    }
+  }
+
+  &__indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00d4ff;
+
+    &--off {
+      color: #ff6b6b;
+    }
+
+    &--screen {
+      color: #00d4ff;
+      animation: pulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}

@@ -1,0 +1,317 @@
+@use "../../scss/globals.scss";
+
+.capture-tester {
+  display: grid;
+  gap: globals.$spacing-unit * 1.5;
+  padding: globals.$spacing-unit * 2;
+  color: globals.$muted-color;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    gap: globals.$spacing-unit;
+    align-items: flex-start;
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: globals.$body-color;
+      font-size: 13px;
+    }
+  }
+
+  &__refresh {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    border: 1px solid globals.$border-color;
+    background: globals.$dark-background-color;
+    color: globals.$muted-color;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+  }
+
+  &__spin {
+    animation: capture-spin 1s linear infinite;
+  }
+
+  &__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: globals.$spacing-unit;
+    border: 1px solid globals.$border-color;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: globals.$spacing-unit * 1.25;
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: globals.$body-color;
+    }
+
+    select {
+      border: 1px solid globals.$border-color;
+      background: globals.$darker-background-color;
+      color: globals.$muted-color;
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+  }
+
+  &__toggle {
+    padding: 6px 10px;
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    background: globals.$darker-background-color;
+  }
+
+  &__error {
+    border: 1px solid rgba(globals.$danger-color, 0.45);
+    background: rgba(globals.$danger-color, 0.1);
+    color: globals.$danger-color;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  &__sources {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: globals.$spacing-unit;
+
+    @media (max-width: 980px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__source-column {
+    border: 1px solid globals.$border-color;
+    border-radius: 12px;
+    padding: globals.$spacing-unit;
+    background: rgba(255, 255, 255, 0.02);
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: globals.$muted-color;
+    }
+  }
+
+  &__source-list {
+    display: grid;
+    gap: 8px;
+    max-height: 220px;
+    overflow: auto;
+
+    button {
+      border: 1px solid globals.$border-color;
+      border-radius: 8px;
+      padding: 10px;
+      background: globals.$darker-background-color;
+      color: globals.$muted-color;
+      text-align: left;
+      display: grid;
+      gap: 4px;
+      cursor: pointer;
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.7;
+      }
+
+      &.is-selected {
+        border-color: globals.$cyan-color;
+        box-shadow: 0 0 0 1px rgba(globals.$cyan-color, 0.4) inset;
+      }
+
+      span {
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      small {
+        color: globals.$body-color;
+      }
+    }
+  }
+
+  &__session {
+    border: 1px solid globals.$border-color;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: globals.$spacing-unit * 1.25;
+    display: grid;
+    gap: globals.$spacing-unit;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__btn {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    &--start {
+      background: rgba(globals.$cyan-color, 0.16);
+      color: globals.$cyan-color;
+      border-color: rgba(globals.$cyan-color, 0.4);
+    }
+
+    &--stop {
+      background: rgba(globals.$danger-color, 0.16);
+      color: globals.$danger-color;
+      border-color: rgba(globals.$danger-color, 0.4);
+    }
+
+    &--call-start {
+      background: rgba(globals.$success-color, 0.16);
+      color: globals.$success-color;
+      border-color: rgba(globals.$success-color, 0.4);
+    }
+
+    &--call-open {
+      background: rgba(globals.$warning-color, 0.16);
+      color: globals.$warning-color;
+      border-color: rgba(globals.$warning-color, 0.4);
+    }
+
+    &--call-stop {
+      background: rgba(globals.$danger-color, 0.12);
+      color: globals.$danger-color;
+      border-color: rgba(globals.$danger-color, 0.3);
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 8px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+    }
+
+    @media (max-width: 620px) {
+      grid-template-columns: 1fr;
+    }
+
+    div {
+      border: 1px solid globals.$border-color;
+      border-radius: 8px;
+      padding: 10px;
+      background: globals.$darker-background-color;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      color: globals.$body-color;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: globals.$muted-color;
+      word-break: break-word;
+    }
+  }
+
+  &__quality {
+    border: 1px solid globals.$border-color;
+    border-radius: 10px;
+    padding: 12px;
+    background: globals.$darker-background-color;
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: globals.$body-color;
+    }
+
+    strong {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      margin: 0;
+      color: globals.$body-color;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    &--excellent {
+      border-color: rgba(globals.$success-color, 0.6);
+      strong {
+        color: globals.$success-color;
+      }
+    }
+
+    &--good {
+      border-color: rgba(globals.$cyan-color, 0.6);
+      strong {
+        color: globals.$cyan-color;
+      }
+    }
+
+    &--fair {
+      border-color: rgba(globals.$warning-color, 0.6);
+      strong {
+        color: globals.$warning-color;
+      }
+    }
+
+    &--poor {
+      border-color: rgba(globals.$danger-color, 0.6);
+      strong {
+        color: globals.$danger-color;
+      }
+    }
+  }
+}
+
+@keyframes capture-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

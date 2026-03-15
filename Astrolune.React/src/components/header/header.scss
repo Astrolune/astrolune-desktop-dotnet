@@ -1,0 +1,151 @@
+@use "../../scss/globals.scss" as globals;
+
+.header {
+  background-color: globals.$dark-background-color;
+  border-bottom: 1px solid globals.$border-color;
+  padding: calc(globals.$spacing-unit * 1.5) calc(globals.$spacing-unit * 1.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(48px);
+  position: relative;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 4);
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 1.5);
+  }
+  
+  &--friends {
+    padding: calc(globals.$spacing-unit * 1.5) calc(globals.$spacing-unit * 2);
+  }
+
+  &__tabs {
+    display: flex;
+    position: relative;
+    background-color: globals.$background-color;
+    border-radius: calc(globals.$spacing-unit * 1);
+    padding: calc(globals.$spacing-unit * 0.5);
+    gap: calc(globals.$spacing-unit * 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &__tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: globals.$body-color;
+    font-size: globals.$small-font-size;
+    padding: calc(globals.$spacing-unit * 1) calc(globals.$spacing-unit * 2);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-align: center;
+    font-weight: 600;
+    position: relative;
+    white-space: nowrap;
+    border-radius: calc(globals.$spacing-unit * 0.75);
+    z-index: 2;
+
+    &:hover {
+      color: globals.$body-color;
+      background-color: rgba(globals.$darker-background-color, 0.03);
+    }
+  }
+
+  &__tab-indicator {
+    position: absolute;
+    top: calc(globals.$spacing-unit * 0.5);
+    bottom: calc(globals.$spacing-unit * (-0.4));
+    border-bottom: 2px solid globals.$cyan-color;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
+  }
+
+  &__user-info {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 1.5);
+  }
+
+  &__username {
+    color: globals.$muted-color;
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  &__icon-button {
+    background: none;
+    border: none;
+    color: globals.$body-color;
+    cursor: pointer;
+    padding: calc(globals.$spacing-unit * 0.75);
+    border-radius: calc(globals.$spacing-unit * 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: calc(globals.$spacing-unit * 4);
+    height: calc(globals.$spacing-unit * 4);
+    position: relative;
+
+    &:hover {
+      color: globals.$muted-color;
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    &:active {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    svg {
+      width: calc(globals.$spacing-unit * 2.25);
+      height: calc(globals.$spacing-unit * 2.25);
+    }
+
+    &--notifications {
+      &.has-unread::after {
+        content: '';
+        position: absolute;
+        top: calc(globals.$spacing-unit * 0.5);
+        right: calc(globals.$spacing-unit * 0.5);
+        width: calc(globals.$spacing-unit * 0.75);
+        height: calc(globals.$spacing-unit * 0.75);
+        background-color: globals.$danger-color;
+        border-radius: 50%;
+        border: 2px solid globals.$background-color;
+      }
+    }
+  }
+
+  &__action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit * 0.75);
+    height: calc(globals.$spacing-unit * 4);
+    padding: 0 calc(globals.$spacing-unit * 1.5);
+    border-radius: calc(globals.$spacing-unit * 0.75);
+    border: 1px solid rgba(globals.$cyan-color, 0.35);
+    background: rgba(globals.$cyan-color, 0.12);
+    color: globals.$cyan-color;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: rgba(globals.$cyan-color, 0.2);
+      border-color: rgba(globals.$cyan-color, 0.55);
+      color: globals.$light-color;
+    }
+  }
+
+  &__search {
+    width: calc(220px);
+  }
+}

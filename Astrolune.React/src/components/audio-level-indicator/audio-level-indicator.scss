@@ -1,0 +1,32 @@
+@use "../../scss/globals.scss";
+
+.audio-level-indicator {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 24px;
+  padding: globals.$spacing-unit;
+  background-color: globals.$darker-background-color;
+  border-radius: 6px;
+
+  &__bar {
+    width: 4px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    transition: height 0.05s ease, background-color 0.1s ease;
+
+    &--active {
+      background-color: globals.$success-color;
+      height: 100%;
+    }
+
+    &--medium.audio-level-indicator__bar--active {
+      background-color: globals.$warning-color;
+    }
+
+    &--high.audio-level-indicator__bar--active {
+      background-color: globals.$danger-color;
+    }
+  }
+}

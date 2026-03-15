@@ -1,0 +1,184 @@
+// ========================================
+// BRAND COLORS - Change these to update the entire theme
+// ========================================
+$brand-primary: #ff0000;
+$brand-primary-light: #f96767;
+$brand-primary-dark: #b20808;
+$brand-danger: #f23f43;
+$brand-warning: #f0b232;
+
+// ========================================
+// BASE PALETTE - Derived from brand colors
+// ========================================
+$background-color: #000000;
+$dark-background-color: #000000;
+$darker-background-color: rgba(255, 255, 255, 0.05);
+
+$muted-color: #c0c1c7;
+$body-color: #8e919b;
+$light-color: #ffffff;
+
+$border-color: rgba(255, 255, 255, 0.08);
+$danger-color: $brand-danger;
+$warning-color: $brand-warning;
+
+// Primary/Accent colors (cyan theme)
+$cyan-color: $brand-primary;
+$cyan-light: $brand-primary-light;
+$cyan-dark: $brand-primary-dark;
+$cyan-glow: rgba($brand-primary, 0.4);
+
+$success-color: rgba(0, 255, 0, 0.521);
+$primary-color: $cyan-color;
+$primary-hover-color: $cyan-light;
+
+$accent-color: $cyan-color;
+$accent-hover-color: $cyan-light;
+$accent-glow: $cyan-glow;
+
+$speaking-color: $cyan-color;
+
+// ========================================
+// INTERACTION STATES
+// ========================================
+$hover-button-background: rgba(255, 255, 255, 0.06);
+$hover-button-border: rgba(255, 255, 255, 0.1);
+$hover-button-active-background: rgba(255, 255, 255, 0.1);
+
+$disabled-opacity: 0.5;
+$active-opacity: 0.7;
+
+// ========================================
+// SPACING & SIZING
+// ========================================
+$spacing-unit: 8px;
+
+// ========================================
+// Z-INDEX LAYERS
+// ========================================
+$toast-z-index: 5;
+$bottom-panel-z-index: 3;
+$title-bar-z-index: 9999;
+$backdrop-z-index: 4;
+$modal-z-index: 5;
+$call-panel-z-index: 4;
+
+// ========================================
+// TYPOGRAPHY
+// ========================================
+$body-font-size: 14px;
+$small-font-size: 12px;
+
+// ========================================
+// COMPONENT-SPECIFIC COLORS
+// ========================================
+
+// Banner
+$banner-bg-opacity: 0.35;
+$border-opacity: 0.8;
+
+$banner-success-bg: rgba($cyan-color, 0.35);
+$banner-success-border: rgba($cyan-color, 0.25);
+$banner-success-color: $cyan-color;
+
+$banner-danger-bg: rgba($danger-color, 0.35);
+$banner-danger-border: rgba($danger-color, 0.25);
+$banner-danger-color: $danger-color;
+
+$banner-warning-bg: rgba($warning-color, 0.35);
+$banner-warning-border: rgba($warning-color, 0.25);
+$banner-warning-color: $warning-color;
+
+// Settings Modal
+$settings-sidebar-width: 300px;
+$settings-content-width: 100%;
+$settings-card-bg: rgba(255, 255, 255, 0.02);
+$settings-card-hover-border: rgba(255, 255, 255, 0.08);
+$settings-card-danger-bg: rgba(138, 14, 16, 0.1);
+$settings-card-danger-border-color: rgba($danger-color, 0.212);
+$settings-card-danger-hover-border: rgba($danger-color, 0.096);
+$settings-card-icon-bg: rgba(255, 255, 255, 0.05);
+$settings-card-icon-danger-bg: rgba($danger-color, 0.12);
+$settings-card-icon-success-bg: rgba($cyan-color, 0.12);
+$settings-card-icon-danger-color: $danger-color;
+$settings-card-icon-success-color: $cyan-color;
+
+// Profile Card
+$profile-banner-gradient: linear-gradient(
+  135deg,
+  rgba($cyan-color, 0.12) 0%,
+  rgba($cyan-light, 0.1) 20%,
+  rgba($cyan-dark, 0.08) 40%,
+  rgba($cyan-color, 0.1) 60%,
+  rgba($cyan-color, 0.12) 80%,
+  rgba($cyan-light, 0.1) 100%
+);
+$profile-banner-border: rgba($cyan-color, 0.15);
+$profile-banner-icon-bg: rgba(0, 0, 0, 0.5);
+$profile-card-bg: #050505;
+$profile-card-gradient: $profile-banner-gradient;
+$profile-card-status-bg: rgba(0, 0, 0, 0.85);
+$profile-card-status-border: rgba(255, 255, 255, 0.1);
+$profile-premium-bg: rgba(255, 255, 255, 0.02);
+$profile-premium-border: $border-color;
+$profile-premium-text-gradient: linear-gradient(270deg, $cyan-color 50%, rgba($cyan-color, 0.7) 100%);
+$profile-premium-icon-color: $cyan-color;
+
+// Select
+$select-item-bg: $darker-background-color;
+$select-item-hover-bg: rgba(255, 255, 255, 0.08);
+$select-item-hover-border: rgba(255, 255, 255, 0.15);
+$select-item-active-bg: rgba($cyan-color, 0.15);
+$select-item-active-border: rgba($cyan-color, 0.4);
+$select-item-active-hover-bg: rgba($cyan-color, 0.12);
+
+// Call/Video
+$call-panel-bg: rgba(0, 0, 0, 0.95);
+$call-panel-border: rgba(255, 255, 255, 0.1);
+$call-button-bg: rgba(255, 255, 255, 0.08);
+$call-button-hover-bg: rgba(255, 255, 255, 0.12);
+$call-button-active-bg: rgba($cyan-color, 0.2);
+$call-end-bg: $danger-color;
+@use "sass:color";
+$call-end-hover-bg: color.adjust($danger-color, $lightness: -5%);
+$participant-card-bg: rgba(255, 255, 255, 0.03);
+$participant-card-border: rgba(255, 255, 255, 0.08);
+$participant-speaking-border: $cyan-color;
+
+// Premium
+$premium-banner-bg: linear-gradient(135deg, rgba($cyan-color, 0.08) 0%, rgba($cyan-color, 0.04) 100%);
+$premium-banner-border: rgba($cyan-color, 0.2);
+$premium-banner-glow-bg: rgba($cyan-color, 0.15);
+$premium-icon-bg: rgba($cyan-color, 0.15);
+$premium-icon-color: $cyan-color;
+$premium-feature-bg: rgba(255, 255, 255, 0.02);
+$premium-feature-hover-bg: $hover-button-background;
+$premium-feature-hover-border: rgba(255, 255, 255, 0.12);
+
+// Winter Theme (optional decorations)
+$snowflake-color: rgba(255, 255, 255, 0.15);
+$winter-frost-bg: rgba($cyan-color, 0.03);
+$winter-glow: rgba($cyan-light, 0.2);
+
+// ========================================
+// CSS CUSTOM PROPERTIES (for runtime access)
+// ========================================
+:root {
+  --bg-primary: #{$background-color};
+  --bg-secondary: #{$darker-background-color};
+  --bg-hover: #{$hover-button-background};
+
+  --text-primary: #{$muted-color};
+  --text-secondary: #{$body-color};
+  --text-light: #{$light-color};
+
+  --border-primary: #{$border-color};
+
+  --accent-primary: #{$cyan-color};
+  --accent-light: #{$cyan-light};
+  --accent-glow: #{$cyan-glow};
+
+  --danger: #{$danger-color};
+  --warning: #{$warning-color};
+  --success: #{$success-color};
+}

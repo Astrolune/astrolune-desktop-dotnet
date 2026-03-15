@@ -1,0 +1,17 @@
+.livekit-video {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+
+  &--mirror {
+    transform: scaleX(-1);
+  }
+
+  &--cover {
+    object-fit: cover;
+  }
+
+  &--contain {
+    object-fit: contain;
+  }
+}

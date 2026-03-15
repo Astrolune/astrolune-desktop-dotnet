@@ -1,0 +1,46 @@
+@use "../../scss/globals.scss" as globals;
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+  margin-left: auto;
+  -webkit-app-region: no-drag;
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 35px;
+    background: transparent;
+    border: none;
+    color: globals.$body-color;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: globals.$muted-color;
+    }
+
+    &:active {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    &--close:hover {
+      background-color: #e81123;
+      color: #ffffff;
+    }
+
+    &--close:active {
+      background-color: rgba(232, 17, 35, 0.9);
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}

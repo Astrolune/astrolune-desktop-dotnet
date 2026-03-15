@@ -1,0 +1,171 @@
+@use "../../scss/globals.scss";
+
+.call-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: globals.$spacing-unit * 1.5 globals.$spacing-unit * 2;
+  background-color: rgba(0, 0, 0, 0.95);
+  border-top: 1px solid globals.$call-panel-border;
+  backdrop-filter: blur(12px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: globals.$call-panel-z-index;
+  height: 68px;
+
+  &--hidden {
+    opacity: 0;
+    transform: translateY(100%);
+    pointer-events: none;
+  }
+
+  &--compact {
+    padding: globals.$spacing-unit globals.$spacing-unit * 1.5;
+    height: auto;
+    
+    .call-controls__button {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  &__left,
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+    min-width: 140px;
+  }
+
+  &__right {
+    justify-content: flex-end;
+  }
+
+  &__center {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+  }
+
+  &__participants {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.75;
+    padding: globals.$spacing-unit globals.$spacing-unit * 1.5;
+    background-color: globals.$call-button-bg;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: globals.$muted-color;
+
+    svg {
+      color: globals.$body-color;
+    }
+  }
+
+  &__button {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: globals.$call-button-bg;
+    border: 1px solid transparent;
+    color: globals.$muted-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$call-button-hover-bg;
+      color: globals.$light-color;
+    }
+
+    &--active {
+      background-color: rgba(242, 63, 67, 0.2);
+      color: globals.$danger-color;
+      border-color: rgba(242, 63, 67, 0.3);
+
+      &:hover {
+        background-color: rgba(242, 63, 67, 0.3);
+        color: globals.$danger-color;
+      }
+    }
+
+    &--enabled {
+      background-color: rgba(0, 212, 255, 0.2);
+      color: globals.$cyan-color;
+      border-color: rgba(0, 212, 255, 0.3);
+
+      &:hover {
+        background-color: rgba(0, 212, 255, 0.3);
+        color: globals.$cyan-color;
+      }
+    }
+
+    &--danger {
+      background-color: globals.$call-end-bg;
+      color: globals.$light-color;
+
+      &:hover {
+        background-color: globals.$call-end-hover-bg;
+        color: globals.$light-color;
+      }
+    }
+
+    &--secondary {
+      width: 36px;
+      height: 36px;
+      background-color: transparent;
+      color: globals.$body-color;
+
+      &:hover {
+        background-color: globals.$call-button-bg;
+        color: globals.$muted-color;
+      }
+    }
+  }
+
+  &__tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: globals.$spacing-unit * 0.75 globals.$spacing-unit * 1.5;
+    background-color: rgba(0, 0, 0, 0.95);
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: globals.$light-color;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 100;
+    animation: tooltip-fade-in 0.15s ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: rgba(0, 0, 0, 0.95);
+    }
+  }
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

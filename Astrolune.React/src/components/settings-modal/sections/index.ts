@@ -1,0 +1,7 @@
+export { ProfileSection } from "./profile-section"
+export { VoiceVideoSection } from "./voice-video-section"
+export { AccountSection } from "./account-section"
+export { PrivacySection } from "./privacy-section"
+export { NotificationsSection } from "./notifications-section"
+export { LanguageSection } from "./language-section"
+export { PremiumSection } from "./premium-section"

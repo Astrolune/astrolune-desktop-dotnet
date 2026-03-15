@@ -1,0 +1,369 @@
+@use "../../scss/globals.scss";
+
+.screen-share-picker {
+  width: 680px;
+  max-width: 90vw;
+  max-height: 80vh;
+  background-color: globals.$dark-background-color;
+  border: 1px solid globals.$border-color;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: picker-slide-in 0.2s ease-out;
+  z-index: globals.$modal-z-index + 20;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: globals.$spacing-unit * 1.5 globals.$spacing-unit * 2;
+    border-bottom: 1px solid globals.$border-color;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: globals.$light-color;
+  }
+
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.5;
+  }
+
+  &__settings-btn,
+  &__close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    color: globals.$body-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+      color: globals.$muted-color;
+    }
+
+    &--active {
+      background-color: rgba(0, 212, 255, 0.12);
+      border-color: rgba(0, 212, 255, 0.25);
+      color: globals.$cyan-color;
+    }
+  }
+
+  &__settings {
+    padding: globals.$spacing-unit * 1.5 globals.$spacing-unit * 2;
+    border-bottom: 1px solid globals.$border-color;
+    background-color: rgba(255, 255, 255, 0.01);
+    display: flex;
+    flex-direction: column;
+    gap: globals.$spacing-unit * 1.5;
+  }
+
+  &__settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: globals.$spacing-unit * 0.75;
+  }
+
+  &__settings-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: globals.$body-color;
+    letter-spacing: 0.02em;
+  }
+
+  &__options {
+    display: flex;
+    gap: globals.$spacing-unit * 0.5;
+    flex-wrap: wrap;
+  }
+
+  &__option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: globals.$spacing-unit globals.$spacing-unit * 1.25;
+    background-color: globals.$darker-background-color;
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    color: globals.$body-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-width: 65px;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+      color: globals.$muted-color;
+    }
+
+    &--active {
+      background-color: rgba(0, 212, 255, 0.12);
+      border-color: rgba(0, 212, 255, 0.3);
+      color: globals.$cyan-color;
+    }
+  }
+
+  &__option-label {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  &__option-desc {
+    font-size: 9px;
+    opacity: 0.7;
+  }
+
+  &__toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: globals.$muted-color;
+    cursor: pointer;
+  }
+
+  &__toggle {
+    width: 40px;
+    height: 22px;
+    background-color: globals.$darker-background-color;
+    border: 1px solid globals.$border-color;
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &--active {
+      background-color: rgba(0, 212, 255, 0.25);
+      border-color: globals.$cyan-color;
+
+      .screen-share-picker__toggle-handle {
+        transform: translateX(18px);
+        background-color: globals.$cyan-color;
+      }
+    }
+  }
+
+  &__toggle-handle {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background-color: globals.$body-color;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  &__tabs {
+    display: flex;
+    padding: globals.$spacing-unit globals.$spacing-unit * 2;
+    gap: globals.$spacing-unit * 0.5;
+    border-bottom: 1px solid globals.$border-color;
+  }
+
+  &__tab {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.75;
+    padding: globals.$spacing-unit globals.$spacing-unit * 1.5;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: globals.$body-color;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+      color: globals.$muted-color;
+    }
+
+    &--active {
+      background-color: rgba(0, 212, 255, 0.12);
+      border-color: rgba(0, 212, 255, 0.25);
+      color: globals.$cyan-color;
+    }
+  }
+
+  &__tab-count {
+    padding: 2px 6px;
+    background-color: globals.$darker-background-color;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: globals.$spacing-unit * 1.5;
+    min-height: 200px;
+  }
+
+  &__loading,
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: globals.$spacing-unit * 1.5;
+    min-height: 180px;
+    color: globals.$body-color;
+
+    svg {
+      opacity: 0.4;
+    }
+  }
+
+  &__spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid globals.$border-color;
+    border-top-color: globals.$cyan-color;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: globals.$spacing-unit * 1.5;
+  }
+
+  &__source {
+    display: flex;
+    flex-direction: column;
+    background: none;
+    border: 2px solid globals.$border-color;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: rgba(0, 212, 255, 0.3);
+    }
+
+    &--selected {
+      border-color: globals.$cyan-color;
+    }
+  }
+
+  &__source-preview {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background-color: globals.$darker-background-color;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__source-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: globals.$spacing-unit * 0.75;
+    color: globals.$body-color;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(globals.$cyan-color, 0.1), transparent 55%),
+      linear-gradient(165deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.4));
+    padding: globals.$spacing-unit;
+    text-align: center;
+
+    span {
+      font-size: 11px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__source-check {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 212, 255, 0.25);
+    color: globals.$light-color;
+  }
+
+  &__source-info {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.75;
+    padding: globals.$spacing-unit;
+    background-color: globals.$darker-background-color;
+  }
+
+  &__source-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  &__source-name {
+    font-size: 11px;
+    color: globals.$muted-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__source-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    small {
+      font-size: 10px;
+      color: globals.$body-color;
+      opacity: 0.75;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: globals.$spacing-unit;
+    padding: globals.$spacing-unit * 1.5 globals.$spacing-unit * 2;
+    border-top: 1px solid globals.$border-color;
+  }
+}
+
+@keyframes picker-slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

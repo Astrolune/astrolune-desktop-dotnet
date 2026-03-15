@@ -1,0 +1,132 @@
+@use "../../scss/globals.scss";
+
+.hover-card-content {
+  position: fixed;
+  z-index: globals.$modal-z-index;
+  display: flex;
+  width: 256px;
+  background-size: cover;
+  background-position: center;
+  margin-left: 60px;
+  margin-top: -66px;
+  background-repeat: no-repeat;
+  border-radius: 8px;
+  border: 1px solid globals.$border-color;
+  padding: calc(globals.$spacing-unit * 2);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: globals.$background-color;
+  outline: none;
+  transition: transform 0.2s ease;
+  pointer-events: all;
+  isolation: isolate;
+  
+  &[data-state="open"] {
+    opacity: 1;
+    transform: scale(1);
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  
+  &[data-state="closed"] {
+    opacity: 0;
+    transform: scale(0.95);
+    animation: fadeOut 0.2s ease-in-out;
+  }
+  
+  &[data-side="bottom"] {
+    animation: slideInFromTop 0.2s ease-in-out;
+  }
+  
+  &[data-side="left"] {
+    animation: slideInFromRight 0.2s ease-in-out;
+  }
+  
+  &[data-side="right"] {
+    animation: slideInFromLeft 0.2s ease-in-out;
+  }
+  
+  &[data-side="top"] {
+    animation: slideInFromBottom 0.2s ease-in-out;
+  }
+}
+
+.hover-card-content-text {
+  font-weight: bold;
+  display: flex;
+  padding-left: 12px;
+  gap: 6px;
+  font-size: 14px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+// Define animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

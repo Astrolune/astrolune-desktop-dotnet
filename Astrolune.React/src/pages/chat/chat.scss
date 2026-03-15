@@ -1,0 +1,312 @@
+@use "../../scss/globals.scss";
+
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: globals.$background-color;
+
+  &__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: globals.$spacing-unit * 2;
+    display: flex;
+    flex-direction: column;
+    gap: globals.$spacing-unit * 2;
+  }
+
+  &__empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: globals.$spacing-unit * 2;
+    color: globals.$body-color;
+
+    svg {
+      opacity: 0.3;
+      color: globals.$body-color;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: globals.$muted-color;
+    }
+
+    p {
+      font-size: 14px;
+      text-align: center;
+      max-width: 400px;
+      color: globals.$body-color;
+    }
+  }
+
+  &__input-container {
+    padding: globals.$spacing-unit * 1;
+    // border-top: 1px solid globals.$border-color;
+    background-color: globals.$dark-background-color;
+  }
+
+  &__call-invite {
+    margin: globals.$spacing-unit globals.$spacing-unit * 2 0;
+    padding: globals.$spacing-unit * 1.5;
+    border: 1px solid rgba(96, 173, 255, 0.25);
+    background: rgba(96, 173, 255, 0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: globals.$spacing-unit;
+  }
+
+  &__call-invite-text {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+    color: globals.$muted-color;
+    font-size: 13px;
+  }
+
+  &__call-invite-actions {
+    display: flex;
+    gap: globals.$spacing-unit;
+  }
+
+  &__call-accept,
+  &__call-decline {
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    color: globals.$light-color;
+    background: globals.$background-color;
+  }
+
+  &__call-accept {
+    background: #2e8b57;
+    border-color: #2e8b57;
+  }
+
+  &__call-decline {
+    background: #b34747;
+    border-color: #b34747;
+  }
+
+  &__typing {
+    color: globals.$body-color;
+    font-size: 12px;
+    margin-top: globals.$spacing-unit * 0.5;
+  }
+
+  &__state {
+    color: globals.$body-color;
+    font-size: 12px;
+    padding: 4px 0;
+  }
+
+  &__state--error {
+    color: #ff8f8f;
+  }
+
+  &__input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: globals.$spacing-unit;
+    background-color: globals.$background-color;
+    border: 1px solid globals.$hover-button-background;
+    border-radius: 8px;
+    padding: globals.$spacing-unit;
+    transition: border-color 0.15s ease;
+
+    &:focus-within {
+      border-color: globals.$border-color;
+      transition: border-color 0.15s ease;
+    }
+  }
+
+  &__input {
+    flex: 1;
+    min-height: 10px;
+    max-height: 200px;
+    padding: globals.$spacing-unit globals.$spacing-unit * 1.5;
+    background: transparent;
+    border: none;
+    color: globals.$muted-color;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+
+    &::placeholder {
+      color: globals.$body-color;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__action-button {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: none;
+    border: none;
+    color: globals.$body-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+      color: globals.$muted-color;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &--send {
+      background-color: globals.$primary-color;
+      color: globals.$light-color;
+
+      &:hover:not(:disabled) {
+        background-color: globals.$primary-hover-color;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: globals.$primary-color;
+      }
+    }
+  }
+}
+
+.message-item {
+  display: flex;
+  gap: globals.$spacing-unit * 1.5;
+  padding: globals.$spacing-unit globals.$spacing-unit;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+
+    .message-item__actions {
+      opacity: 1;
+    }
+  }
+
+  &__avatar {
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    gap: globals.$spacing-unit;
+    margin-bottom: 0px;
+  }
+
+  &__author {
+    font-weight: 600;
+    font-size: 13px;
+    color: globals.$muted-color;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__timestamp {
+    font-size: 10.5px;
+    color: globals.$body-color;
+  }
+
+  &__delivery {
+    font-size: 10px;
+    color: globals.$body-color;
+    text-transform: lowercase;
+    opacity: 0.8;
+  }
+
+  &__text {
+    font-size: 13px;
+    color: globals.$muted-color;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+
+  &__reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: globals.$spacing-unit;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  &__action {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: globals.$dark-background-color;
+    border: 1px solid globals.$border-color;
+    color: globals.$body-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+      color: globals.$muted-color;
+      border-color: globals.$hover-button-border;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.reaction-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: globals.$darker-background-color;
+  border: globals.$border-color;
+  border-radius: 6px;
+  font-size: 12px;
+  color: globals.$muted-color;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: globals.$hover-button-background;
+    border-color: globals.$hover-button-border;
+  }
+}

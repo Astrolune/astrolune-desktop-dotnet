@@ -1,0 +1,252 @@
+@use "../../scss/globals.scss" as globals;
+
+.commands-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 650px;
+  max-width: 90vw;
+  max-height: 80vh;
+  background-color: globals.$dark-background-color;
+  border: 1px solid globals.$border-color;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  z-index: globals.$modal-z-index;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  animation: commandsMenuSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &__backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: globals.$backdrop-z-index;
+    animation: backdropFadeIn 0.3s ease-out;
+  }
+
+  &__header {
+    padding: globals.$spacing-unit * 1.5;
+    border-bottom: 1px solid globals.$border-color;
+  }
+
+  &__search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+  }
+
+  &__search {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: globals.$muted-color;
+    font-size: 13px;
+    padding: globals.$spacing-unit * 0.5;
+    
+    &::placeholder {
+      color: globals.$body-color;
+    }
+  }
+
+  &__content-wrapper {
+    flex: 1;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  &__content {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+
+  &__section {
+    overflow-y: auto;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    animation: sectionSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid globals.$border-color;
+    }
+  }
+
+  &__section-title {
+    padding: globals.$spacing-unit * 2 globals.$spacing-unit * 2 globals.$spacing-unit;
+    font-size: globals.$small-font-size;
+    color: globals.$body-color;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    padding: globals.$spacing-unit * 0.75 globals.$spacing-unit * 2;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: globals.$spacing-unit * 1.5;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    color: globals.$muted-color;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        height: 40px;
+        margin: auto;
+        border-radius: globals.$spacing-unit;
+        width: 2.5px;
+        background-color: globals.$hover-button-active-background;
+        transition: opacity 0.2s ease;
+      }
+    }
+
+    &:active {
+      opacity: globals.$active-opacity;
+    }
+  }
+
+  &__item-avatar {
+    flex-shrink: 0;
+  }
+
+  &__item-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: globals.$muted-color;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__item-subtitle {
+    font-size: globals.$small-font-size;
+    font-weight: 500;
+    color: globals.$body-color;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__empty {
+    padding: globals.$spacing-unit * 10;
+    text-align: center;
+    color: globals.$body-color;
+    font-size: globals.$body-font-size;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__loading {
+    padding: globals.$spacing-unit * 4;
+    text-align: center;
+    color: globals.$body-color;
+    font-size: globals.$body-font-size;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid globals.$border-color;
+      border-top: 2px solid globals.$muted-color;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: globals.$spacing-unit;
+    }
+  }
+}
+
+@keyframes commandsMenuSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sectionSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .commands-menu {
+    width: 95vw;
+    max-height: 70vh;
+    
+    &__item {
+      padding: globals.$spacing-unit * 1.5;
+    }
+  }
+}

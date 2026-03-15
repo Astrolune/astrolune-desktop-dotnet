@@ -1,0 +1,69 @@
+@use "../../scss/globals.scss";
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: globals.$dark-background-color;
+  padding: globals.$spacing-unit 0;
+  height: 100vh;
+  width: 64px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: globals.$title-bar-z-index;
+  border-right: 1px solid globals.$border-color;
+}
+
+%base-button {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin: calc(globals.$spacing-unit / 2) 0;
+  cursor: pointer;
+  transition: border-radius 0.3s ease-in-out;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.1);
+  
+  &:hover {
+    border-radius: 16px;
+  }
+}
+
+.avatar-wrapper {
+  @extend %base-button;
+}
+
+.home-button {
+  @extend %base-button;
+  color: globals.$background-color;
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plus-button {
+  @extend %base-button;
+  background-size: 24px;
+  color: globals.$background-color;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.compass-button {
+  @extend %base-button;
+  background-size: 24px;
+  color: globals.$background-color;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

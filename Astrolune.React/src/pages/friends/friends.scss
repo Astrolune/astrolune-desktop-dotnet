@@ -1,0 +1,270 @@
+@use "../../scss/globals.scss";
+
+.friends-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: globals.$background-color;
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: globals.$spacing-unit * 3;
+  }
+
+  &__search {
+    margin-bottom: globals.$spacing-unit * 3;
+  }
+
+  &__search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 globals.$spacing-unit * 2;
+    background-color: globals.$dark-background-color;
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    color: globals.$muted-color;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.15s ease;
+  }
+
+  &__section {
+    margin-bottom: globals.$spacing-unit * 4;
+  }
+
+  &__section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: globals.$body-color;
+    margin-bottom: globals.$spacing-unit * 2;
+    letter-spacing: 0.02em;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: globals.$spacing-unit * 6;
+    color: globals.$body-color;
+    text-align: center;
+
+    svg {
+      opacity: 0.3;
+      margin-bottom: globals.$spacing-unit * 2;
+      color: globals.$body-color;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: globals.$muted-color;
+      margin-bottom: globals.$spacing-unit;
+    }
+
+    p {
+      font-size: 14px;
+      max-width: 300px;
+      color: globals.$body-color;
+    }
+  }
+
+  &__add-form {
+    max-width: 500px;
+    margin-bottom: globals.$spacing-unit * 4;
+  }
+
+  &__add-description {
+    font-size: 14px;
+    color: globals.$body-color;
+    margin-bottom: globals.$spacing-unit * 2;
+    line-height: 1.5;
+  }
+
+  &__add-input-wrapper {
+    display: flex;
+    gap: globals.$spacing-unit;
+  }
+
+  &__add-input {
+    flex: 1;
+    height: 44px;
+    padding: 0 globals.$spacing-unit * 2;
+    background-color: globals.$dark-background-color;
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    color: globals.$muted-color;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.15s ease;
+
+    &::placeholder {
+      color: globals.$body-color;
+    }
+
+    &:focus {
+      border-color: rgba(globals.$cyan-color, 0.5);
+      background-color: globals.$background-color;
+    }
+  }
+
+  &__add-button {
+    height: 44px;
+    padding: 0 globals.$spacing-unit * 3;
+    background-color: globals.$primary-color;
+    color: globals.$light-color;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background-color: globals.$primary-hover-color;
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: globals.$spacing-unit * 1.5;
+  padding: globals.$spacing-unit;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-top: 1px solid transparent;
+
+  &:hover {
+    background-color: globals.$hover-button-background;
+
+    .friend-item__actions {
+      opacity: 1;
+    }
+  }
+
+  &:not(:first-child) {
+    border-top-color: globals.$border-color;
+  }
+
+  &__avatar {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__status-indicator {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid globals.$background-color;
+
+    &--online {
+      background-color: globals.$success-color;
+    }
+
+    &--dnd {
+      background-color: globals.$danger-color;
+    }
+
+    &--inactive {
+      background-color: globals.$warning-color;
+    }
+
+    &--offline,
+    &--invisible {
+      background-color: globals.$body-color;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 13px;
+    color: globals.$muted-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__status {
+    font-size: 12.5px;
+    color: globals.$body-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.5;
+  }
+
+  &__actions {
+    display: flex;
+    gap: globals.$spacing-unit;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+
+    &--visible {
+      opacity: 1;
+    }
+  }
+
+  &__action {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: globals.$dark-background-color;
+    border: 1px solid globals.$border-color;
+    color: globals.$body-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-active-background;
+      color: globals.$muted-color;
+      border-color: globals.$hover-button-border;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &--accept {
+      color: globals.$success-color;
+      border-color: rgba(globals.$success-color, 0.35);
+    }
+
+    &--danger {
+      color: globals.$danger-color;
+      border-color: rgba(globals.$danger-color, 0.35);
+    }
+  }
+}

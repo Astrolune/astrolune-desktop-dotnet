@@ -1,0 +1,142 @@
+@use "./globals.scss";
+
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Noto Sans", sans-serif;
+  font-size: globals.$body-font-size;
+  color: globals.$body-color;
+  background-color: #000;
+  overflow: hidden;
+  user-select: none;
+}
+
+button {
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Root */
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Title bar */
+.title-bar {
+  display: flex;
+  align-items: center;
+  height: 35px;
+  padding: 0 0 0 calc(globals.$spacing-unit * 2);
+  -webkit-app-region: drag;
+  border-bottom: 1px solid globals.$border-color;
+  background-color: #000;
+  z-index: globals.$title-bar-z-index;
+
+  h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: globals.$muted-color;
+  }
+
+  &__infinity-text {
+    background: linear-gradient(270deg, globals.$cyan-color 50%, rgba(globals.$cyan-color, 0.84) 100%);
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Main layout */
+main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sidebar fix */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 309px;
+  height: 100%;
+  background-color: globals.$background-color;
+  border-right: 1px solid globals.$border-color;
+  overflow: hidden;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .section {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: globals.$spacing-unit;
+  }
+
+  .user-section {
+    flex-shrink: 0;
+    margin-top: auto;
+    border-top: 1px solid globals.$border-color;
+    padding: globals.$spacing-unit;
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+  }
+}
+
+/* Container for Outlet */
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+
+  &__content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 4px;
+
+  &:hover {
+    background-color: rgba(255,255,255,0.2);
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Astrolune.Desktop": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASTROLUNE_USE_DEVSERVER": "1",
+        "ASTROLUNE_DEV_URL": "http://localhost:5173"
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+@use "../../scss/globals.scss";
+
+.profile-preview {
+  &__card {
+    background-color: globals.$profile-card-bg !important;
+    border-radius: 12px;
+    overflow: hidden;
+    background-image: none !important;
+    z-index: 10;
+    border: 1px solid var(--settings-border);
+    position: relative;
+    opacity: 1 !important; 
+    visibility: visible !important;
+    backdrop-filter: none !important; 
+    transform: translateZ(0)
+  }
+
+  &__banner {
+    height: 65px;
+    background: globals.$profile-card-gradient;
+    position: relative;
+
+    &-decoration {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(globals.$cyan-color, 0.3);
+    }
+  }
+
+  &__avatar-wrapper {
+    position: relative;
+    margin-top: -32px;
+    margin-left: globals.$spacing-unit * 2;
+  }
+
+  &__avatar-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  &__status-button {
+    position: absolute;
+    bottom: 27px;
+    left: 80px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background-color: globals.$profile-card-status-bg;
+    border: 1px solid globals.$profile-card-status-border;
+    border-radius: 12px;
+    font-size: 11px;
+    color: var(--settings-text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+    transition: all ease 0.2s;
+
+    &:hover {
+      background-color: globals.$profile-card-status-border;
+      color: var(--settings-text-primary);
+    }
+  }
+
+  &__content {
+    padding: globals.$spacing-unit * 2 globals.$spacing-unit * 2;
+    padding-top: globals.$spacing-unit;
+  }
+
+  &__name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--settings-text-light);
+    margin-bottom: 2px;
+  }
+
+  &__username {
+    font-size: 13px;
+    color: var(--settings-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+    flex-wrap: wrap;
+  }
+
+  &__pronouns {
+    font-style: italic;
+    color: var(--settings-text-secondary);
+  }
+
+  &__example-button {
+    width: 100%;
+    margin-top: globals.$spacing-unit * 2;
+  }
+}

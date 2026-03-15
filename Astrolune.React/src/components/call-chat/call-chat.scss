@@ -1,0 +1,208 @@
+// @use "../../scss/globals.scss";
+
+// .call-chat {
+//   position: absolute;
+//   right: globals.$spacing-unit * 2;
+//   bottom: 80px;
+//   width: 320px;
+//   height: 420px;
+//   background: globals.$dark-background-color;
+//   border: 1px solid globals.$border-color;
+//   border-radius: 12px;
+//   display: flex;
+//   flex-direction: column;
+//   overflow: hidden;
+//   z-index: 50;
+//   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+//   animation: chat-slide-in 0.2s ease-out;
+
+//   &__header {
+//     display: flex;
+//     align-items: center;
+//     gap: globals.$spacing-unit;
+//     padding: globals.$spacing-unit * 1.25 globals.$spacing-unit * 1.5;
+//     border-bottom: 1px solid globals.$border-color;
+//     flex-shrink: 0;
+//   }
+
+//   &__title {
+//     font-size: 13px;
+//     font-weight: 600;
+//     color: globals.$light-color;
+//   }
+
+//   &__room {
+//     flex: 1;
+//     font-size: 11px;
+//     color: globals.$body-color;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//     white-space: nowrap;
+//   }
+
+//   &__close {
+//     width: 26px;
+//     height: 26px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background: none;
+//     border: 1px solid globals.$border-color;
+//     border-radius: 4px;
+//     color: globals.$body-color;
+//     cursor: pointer;
+//     transition: all 0.15s ease;
+
+//     &:hover {
+//       background: globals.$hover-button-background;
+//       color: globals.$muted-color;
+//     }
+//   }
+
+//   &__messages {
+//     flex: 1;
+//     overflow-y: auto;
+//     padding: globals.$spacing-unit * 1.25;
+//     display: flex;
+//     flex-direction: column;
+//     gap: globals.$spacing-unit;
+//   }
+
+//   &__empty {
+//     flex: 1;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     gap: globals.$spacing-unit * 0.5;
+//     text-align: center;
+
+//     p {
+//       font-size: 13px;
+//       color: globals.$muted-color;
+//     }
+
+//     span {
+//       font-size: 11px;
+//       color: globals.$body-color;
+//     }
+//   }
+
+//   &__message {
+//     padding: globals.$spacing-unit globals.$spacing-unit * 1.25;
+//     background: rgba(255, 255, 255, 0.02);
+//     border-radius: 8px;
+//     border: 1px solid rgba(255, 255, 255, 0.04);
+
+//     &--local {
+//       background: rgba(0, 212, 255, 0.06);
+//       border-color: rgba(0, 212, 255, 0.12);
+//     }
+//   }
+
+//   &__message-header {
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     margin-bottom: 3px;
+//   }
+
+//   &__message-sender {
+//     font-size: 11px;
+//     font-weight: 600;
+//     color: globals.$cyan-color;
+//   }
+
+//   &__message-time {
+//     font-size: 9px;
+//     color: globals.$body-color;
+//   }
+
+//   &__message-text {
+//     font-size: 12px;
+//     color: globals.$muted-color;
+//     line-height: 1.4;
+//     word-wrap: break-word;
+//   }
+
+//   &__input-area {
+//     display: flex;
+//     align-items: center;
+//     gap: globals.$spacing-unit * 0.75;
+//     padding: globals.$spacing-unit * 1.25;
+//     border-top: 1px solid globals.$border-color;
+//     flex-shrink: 0;
+//   }
+
+//   &__emoji-btn {
+//     width: 28px;
+//     height: 28px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background: none;
+//     border: none;
+//     border-radius: 4px;
+//     color: globals.$body-color;
+//     cursor: pointer;
+//     transition: all 0.15s ease;
+
+//     &:hover {
+//       background: globals.$hover-button-background;
+//       color: globals.$cyan-color;
+//     }
+//   }
+
+//   &__input {
+//     flex: 1;
+//     padding: globals.$spacing-unit globals.$spacing-unit * 1.25;
+//     background: globals.$darker-background-color;
+//     border: 1px solid globals.$border-color;
+//     border-radius: 6px;
+//     color: globals.$muted-color;
+//     font-size: 12px;
+//     outline: none;
+
+//     &:focus {
+//       border-color: rgba(0, 212, 255, 0.3);
+//     }
+
+//     &::placeholder {
+//       color: globals.$body-color;
+//     }
+//   }
+
+//   &__send-btn {
+//     width: 32px;
+//     height: 32px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background: rgba(0, 212, 255, 0.12);
+//     border: 1px solid rgba(0, 212, 255, 0.25);
+//     border-radius: 6px;
+//     color: globals.$cyan-color;
+//     cursor: pointer;
+//     transition: all 0.15s ease;
+
+//     &:hover:not(:disabled) {
+//       background: rgba(0, 212, 255, 0.2);
+//     }
+
+//     &:disabled {
+//       opacity: 0.4;
+//       cursor: not-allowed;
+//     }
+//   }
+// }
+
+// @keyframes chat-slide-in {
+//   from {
+//     opacity: 0;
+//     transform: translateY(8px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+// }

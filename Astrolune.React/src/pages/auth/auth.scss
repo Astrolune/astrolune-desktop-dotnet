@@ -1,0 +1,171 @@
+@use "../../scss/globals.scss";
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes moveGlow {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-30%, -30%) scale(1.2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+}
+
+.authPageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 35px);
+  width: 100%;
+  background-color: globals.$background-color;
+  padding: calc(globals.$spacing-unit * 2.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.glowEffect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(globals.$cyan-color, 0.26) 0%, rgba(globals.$cyan-color, 0.07) 40%, transparent 70%);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+  animation: moveGlow 15s infinite ease-in-out;
+  filter: blur(100px);
+}
+
+.fadeIn {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.authContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 460px;
+  opacity: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.logoContainer {
+  margin-bottom: calc(globals.$spacing-unit * 2.5);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: globals.$light-color;
+  margin: 0;
+  margin-bottom: globals.$spacing-unit;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: globals.$small-font-size;
+  color: globals.$body-color;
+  margin: 0;
+  margin-bottom: calc(globals.$spacing-unit * 3);
+  text-align: center;
+  line-height: 1.45;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: calc(globals.$spacing-unit * 2);
+}
+
+.actionButton {
+  width: 100%;
+  padding: calc(globals.$spacing-unit * 1.75);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dividerWithPseudo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: globals.$spacing-unit 0;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid globals.$border-color;
+  }
+}
+
+.dividerText {
+  padding: 0 calc(globals.$spacing-unit * 2);
+  color: globals.$body-color;
+  font-size: globals.$body-font-size;
+}
+
+.secondaryButton {
+  width: 100%;
+  padding: calc(globals.$spacing-unit * 1.75);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+@media (max-width: 768px) {
+  .authPageContainer {
+    padding: calc(globals.$spacing-unit * 1.5);
+  }
+
+  .authContent {
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .glowEffect {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .authPageContainer {
+    padding: globals.$spacing-unit;
+  }
+
+  .form {
+    gap: calc(globals.$spacing-unit * 1.5);
+  }
+
+  .logoContainer {
+    margin-bottom: calc(globals.$spacing-unit * 2);
+  }
+
+  .subtitle {
+    margin-bottom: calc(globals.$spacing-unit * 2);
+  }
+}

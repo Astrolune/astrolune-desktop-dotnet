@@ -1,0 +1,23 @@
+<Window x:Class="Astrolune.Desktop.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AstroLune"
+        Width="520"
+        Height="320"
+        MinWidth="520"
+        MinHeight="320"
+        MaxWidth="520"
+        MaxHeight="320"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="#111A2C"
+        Topmost="True"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+            <TextBlock Text="AstroLune" FontSize="28" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" />
+            <TextBlock Text="Preparing media stack..." FontSize="14" Foreground="#D0D6E3" HorizontalAlignment="Center" Margin="0,8,0,0" />
+        </StackPanel>
+    </Grid>
+</Window>

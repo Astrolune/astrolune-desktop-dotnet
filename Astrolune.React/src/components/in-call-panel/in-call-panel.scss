@@ -1,0 +1,245 @@
+@use "../../scss/globals.scss";
+
+.in-call-panel {
+  position: relative;
+  display: flex;
+  min-height: 200px;
+  flex-direction: column;
+  background-color: globals.$dark-background-color;
+  border-bottom: 1px solid globals.$border-color;
+  transition: height 0.2s ease;
+  user-select: none;
+  overflow: hidden;
+
+  &--dragging {
+    transition: none;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: globals.$spacing-unit * 1.5 globals.$spacing-unit * 2;
+    padding-top: globals.$spacing-unit * 2.5;
+    border-bottom: 1px solid globals.$border-color;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 1.5;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.75;
+  }
+
+  &__indicator {
+    width: 8px;
+    height: 8px;
+    background-color: globals.$speaking-color;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  &__duration {
+    font-size: 13px;
+    font-weight: 500;
+    color: globals.$muted-color;
+  }
+
+  &__room {
+    font-size: 12px;
+    color: globals.$body-color;
+  }
+
+  &__header-controls {
+    display: flex;
+    gap: globals.$spacing-unit * 0.5;
+  }
+
+  &__header-button {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid globals.$border-color;
+    border-radius: 4px;
+    color: globals.$body-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+      color: globals.$muted-color;
+      border-color: globals.$hover-button-border;
+    }
+  }
+
+  &__participants {
+    flex: 1;
+    display: flex;
+    gap: globals.$spacing-unit;
+    padding: globals.$spacing-unit * 2;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: globals.$background-color;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: globals.$body-color;
+      border-radius: 3px;
+
+      &:hover {
+        background: globals.$muted-color;
+      }
+    }
+  }
+
+  &__participant {
+    flex-shrink: 0;
+  }
+
+  &__avatar-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__speaking-ring {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 2px solid globals.$speaking-color;
+    border-radius: 50%;
+    animation: speaking-pulse 1s ease-in-out infinite;
+  }
+
+  &__status-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: globals.$danger-color;
+    border: 2px solid globals.$dark-background-color;
+    border-radius: 50%;
+    color: globals.$light-color;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: globals.$spacing-unit;
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    max-width: calc(100% - #{globals.$spacing-unit * 4});
+    align-self: center;
+    padding: globals.$spacing-unit * 1.5 globals.$spacing-unit * 2;
+    border: 1px solid globals.$border-color;
+    background-color: globals.$background-color;
+    border-radius: 6px;
+
+    &--resize-ready {
+      cursor: ns-resize;
+    }
+  }
+
+  &__button {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: globals.$call-button-bg;
+    border: 1px solid globals.$border-color;
+    border-radius: 6px;
+    color: globals.$muted-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+      border-color: globals.$hover-button-border;
+    }
+
+    &--active {
+      background-color: rgba(globals.$success-color, 0.15);
+      border-color: rgba(globals.$success-color, 0.3);
+      color: globals.$success-color;
+
+      &:hover {
+        background-color: rgba(globals.$success-color, 0.2);
+        border-color: rgba(globals.$success-color, 0.2);
+      }
+    }
+
+    &--enabled {
+      background-color: rgba(globals.$cyan-color, 0.15);
+      border-color: rgba(globals.$cyan-color, 0.3);
+      color: globals.$cyan-color;
+
+      &:hover {
+        background-color: rgba(globals.$cyan-color, 0.2);
+      }
+    }
+
+    &--danger {
+      background-color: rgba(globals.$danger-color, 0.15);
+      border-color: rgba(globals.$danger-color, 0.3);
+      color: globals.$danger-color;
+
+      &:hover {
+        background-color: rgba(globals.$danger-color, 0.2);
+        border-color: rgba(globals.$danger-color, 0.2);
+        color: globals.$danger-color;
+      }
+    }
+  }
+
+  &--collapsed {
+    .in-call-panel__participants {
+      display: none;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes speaking-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}

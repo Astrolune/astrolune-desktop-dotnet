@@ -1,0 +1,142 @@
+@use "../../scss/globals.scss";
+
+.call-header-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: globals.$spacing-unit globals.$spacing-unit * 2;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 212, 255, 0.08) 0%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+  backdrop-filter: blur(12px);
+  animation: call-panel-slide-in 0.3s ease;
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 1.5;
+    cursor: pointer;
+    padding: globals.$spacing-unit * 0.5 globals.$spacing-unit;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: globals.$hover-button-background;
+
+      .call-header-panel__expand {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.75;
+  }
+
+  &__phone-icon {
+    color: globals.$success-color;
+    animation: phone-pulse 2s ease-in-out infinite;
+  }
+
+  &__duration {
+    font-size: 13px;
+    font-weight: 600;
+    color: globals.$success-color;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__room {
+    font-size: 13px;
+    font-weight: 500;
+    color: globals.$muted-color;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__expand {
+    color: globals.$body-color;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.75;
+  }
+
+  &__button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background-color: globals.$call-button-bg;
+    border: 1px solid transparent;
+    color: globals.$muted-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background-color: globals.$call-button-hover-bg;
+      color: globals.$light-color;
+    }
+
+    &--active {
+      background-color: rgba(242, 63, 67, 0.2);
+      color: globals.$danger-color;
+      border-color: rgba(242, 63, 67, 0.3);
+
+      &:hover {
+        background-color: rgba(242, 63, 67, 0.3);
+      }
+    }
+
+    &--enabled {
+      background-color: rgba(0, 212, 255, 0.2);
+      color: globals.$success-color;
+      border-color: rgba(0, 212, 255, 0.3);
+
+      &:hover {
+        background-color: rgba(0, 212, 255, 0.3);
+      }
+    }
+
+    &--danger {
+      background-color: globals.$call-end-bg;
+      color: globals.$light-color;
+
+      &:hover {
+        background-color: globals.$call-end-hover-bg;
+      }
+    }
+  }
+}
+
+@keyframes call-panel-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes phone-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}

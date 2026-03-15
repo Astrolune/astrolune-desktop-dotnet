@@ -1,0 +1,224 @@
+@use "../../scss/globals.scss";
+
+.user-card {
+  position: relative;
+  width: 320px;
+  border-radius: 8px;
+  background-color: globals.$dark-background-color;
+  overflow: hidden;
+  border: 1px solid globals.$border-color;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  &__banner {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(135deg, globals.$primary-color 0%, #3b83f6 100%);
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__avatar-section {
+    display: flex;
+    align-items: flex-end;
+    padding: 0 globals.$spacing-unit * 2;
+    position: relative;
+    margin-top: -36px;
+    margin-bottom: globals.$spacing-unit;
+  }
+
+  &__avatar-wrapper {
+    position: relative;
+  }
+
+  &__avatar-border {
+    border: 4px solid globals.$dark-background-color;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  &__status-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid globals.$dark-background-color;
+
+    &--online {
+      background-color: globals.$success-color;
+    }
+
+    &--dnd {
+      background-color: globals.$danger-color;
+    }
+
+    &--inactive {
+      background-color: globals.$warning-color;
+    }
+
+    &--offline,
+    &--invisible {
+      background-color: globals.$body-color;
+    }
+  }
+
+  &__badges {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    padding-bottom: globals.$spacing-unit;
+  }
+
+  &__badge {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: globals.$background-color;
+    border-radius: 50%;
+    color: globals.$body-color;
+  }
+
+  &__content {
+    padding: 0 globals.$spacing-unit * 2 globals.$spacing-unit * 2;
+  }
+
+  &__name {
+    font-size: 18px;
+    font-weight: 600;
+    color: globals.$light-color;
+    margin-bottom: 2px;
+  }
+
+  &__username {
+    font-size: 13px;
+    color: globals.$body-color;
+    margin-bottom: globals.$spacing-unit;
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 0.5;
+  }
+
+  &__pronouns {
+    font-style: italic;
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: globals.$border-color;
+    margin: globals.$spacing-unit * 1.5 0;
+  }
+
+  &__section {
+    margin-bottom: globals.$spacing-unit * 1.5;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: globals.$muted-color;
+    margin-bottom: globals.$spacing-unit;
+    letter-spacing: 0.02em;
+  }
+
+  &__bio {
+    font-size: 13px;
+    color: globals.$body-color;
+    line-height: 1.4;
+  }
+
+  &__activity {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit * 1.5;
+    padding: globals.$spacing-unit;
+    background-color: globals.$background-color;
+    border-radius: 4px;
+  }
+
+  &__activity-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: globals.$dark-background-color;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__activity-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__activity-game {
+    font-size: 13px;
+    font-weight: 500;
+    color: globals.$muted-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__activity-time {
+    font-size: 12px;
+    color: globals.$body-color;
+    font-family: monospace;
+  }
+
+  &__actions {
+    display: flex;
+    gap: globals.$spacing-unit;
+    margin-top: globals.$spacing-unit * 2;
+  }
+
+  &__action {
+    flex: 1;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: globals.$spacing-unit;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &--primary {
+      background-color: globals.$primary-color;
+      color: globals.$light-color;
+      border: none;
+
+      &:hover {
+        background-color: globals.$primary-hover-color;
+      }
+    }
+
+    &--secondary {
+      background-color: transparent;
+      color: globals.$muted-color;
+      border: 1px solid globals.$border-color;
+
+      &:hover {
+        background-color: globals.$hover-button-background;
+      }
+    }
+  }
+}

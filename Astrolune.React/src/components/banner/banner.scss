@@ -1,0 +1,65 @@
+@use "../../scss/globals";
+
+.banner {
+  display: flex;
+  align-items: center;           // вертикальное центрирование
+  justify-content: center;       // горизонтальное центрирование
+  gap: globals.$spacing-unit;
+
+  padding: calc(globals.$spacing-unit * 1.2) calc(globals.$spacing-unit * 1.5);
+  max-width: 98%;
+  margin: 16px auto;
+
+  height: 50px;
+  border-radius: 6px;
+  background-color: rgba(20, 20, 20, 0.45);  
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  font-size: 12px;
+  font-weight: 600;
+  color: globals.$body-color;
+
+  &__new-version-link {
+    display: flex;
+    align-items: center;         // вертикальное центрирование текста с иконкой
+    gap: globals.$spacing-unit;
+    color: #b0b3b8;
+    text-decoration: none;
+  }
+
+  &__new-version-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: inherit;
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+  }
+
+  &__new-version-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: globals.$spacing-unit;
+    color: globals.$body-color;
+    font-size: 12px;
+  }
+
+  &--success {
+    background-color: globals.$banner-success-bg;
+    border-color: globals.$banner-success-border;
+    color: globals.$banner-success-color;
+  }
+
+  &--danger {
+    background-color: globals.$banner-danger-bg;
+    border-color: globals.$banner-danger-border;
+    color: globals.$banner-danger-color;
+  }
+
+  &--warning {
+    background-color: globals.$banner-warning-bg;
+    border-color: globals.$banner-warning-border;
+    color: globals.$banner-warning-color;
+  }
+}

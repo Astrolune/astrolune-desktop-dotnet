@@ -1,0 +1,156 @@
+@use "../../scss/globals.scss";
+
+.context-menu {
+  position: fixed;
+  background-color: globals.$dark-background-color;
+  border: 1px solid globals.$border-color;
+  border-radius: 10px;
+  min-width: 200px;
+  max-width: 280px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 1000;
+  overflow: hidden;
+  padding: globals.$spacing-unit * 0.75;
+  backdrop-filter: blur(20px);
+  animation: context-menu-in 0.15s ease-out;
+  
+  &__item-container {
+    position: relative;
+  }
+  
+  &__item {
+    display: flex;
+    align-items: center;
+    padding: globals.$spacing-unit * 1.25 globals.$spacing-unit * 1.5;
+    color: globals.$muted-color;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    border-radius: 6px;
+    margin: 2px 0;
+    font-size: 14px;
+    
+    &:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: globals.$light-color;
+    }
+    
+    &--danger {
+      color: globals.$danger-color;
+      
+      &:hover {
+        background-color: rgba(242, 63, 67, 0.15);
+        color: globals.$danger-color;
+      }
+    }
+  }
+  
+  &__item-icon {
+    margin-right: globals.$spacing-unit * 1.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    color: globals.$body-color;
+    
+    .context-menu__item:hover & {
+      color: globals.$success-color;
+    }
+    
+    .context-menu__item--danger & {
+      color: globals.$danger-color;
+    }
+  }
+  
+  &__item-label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  &__item-shortcut {
+    font-size: 11px;
+    color: globals.$body-color;
+    margin-left: globals.$spacing-unit * 2;
+    padding: 2px 6px;
+    background-color: globals.$darker-background-color;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+  
+  &__item-arrow {
+    font-size: 10px;
+    margin-left: globals.$spacing-unit;
+    color: globals.$body-color;
+    transition: transform 0.15s ease;
+    
+    .context-menu__item:hover & {
+      transform: translateX(2px);
+    }
+  }
+  
+  &__separator {
+    height: 1px;
+    background-color: globals.$border-color;
+    margin: globals.$spacing-unit * 0.75 globals.$spacing-unit * 0.5;
+  }
+  
+  &__submenu {
+    position: absolute;
+    left: calc(100% + globals.$spacing-unit * 0.5);
+    top: 0;
+    background-color: globals.$dark-background-color;
+    border: 1px solid globals.$border-color;
+    border-radius: 10px;
+    min-width: 180px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    overflow: hidden;
+    padding: globals.$spacing-unit * 0.75;
+    animation: context-menu-in 0.15s ease-out;
+  }
+
+  &__emoji-submenu {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: globals.$spacing-unit;
+    gap: globals.$spacing-unit * 0.5;
+  }
+
+  &__emoji-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    padding: globals.$spacing-unit;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    
+    &:hover {
+      background-color: rgba(59, 130, 246, 0.15);
+      transform: scale(1.1);
+    }
+  }
+  
+  &__header {
+    padding: globals.$spacing-unit globals.$spacing-unit * 1.5;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: globals.$body-color;
+    letter-spacing: 0.02em;
+  }
+}
+
+@keyframes context-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
