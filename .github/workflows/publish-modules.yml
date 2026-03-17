@@ -84,7 +84,7 @@ jobs:
           }
           foreach ($pkg in $packages) {
             dotnet nuget push $pkg `
-              --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+              --source "https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" `
               --api-key $env:NUGET_AUTH_TOKEN `
               --skip-duplicate
             if ($LASTEXITCODE -ne 0) {

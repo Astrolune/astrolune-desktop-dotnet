@@ -41,19 +41,19 @@ $TOKEN = "ghp_your_token_here"
 
 # Publish Media Module
 dotnet nuget push artifacts/Astrolune.Media.Module.1.0.0.nupkg `
-  --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+  --source "https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" `
   --api-key $TOKEN `
   --skip-duplicate
 
 # Publish Core Module
 dotnet nuget push artifacts/Astrolune.Core.Module.1.0.0.nupkg `
-  --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+  --source "https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" `
   --api-key $TOKEN `
   --skip-duplicate
 
 # Publish SDK
 dotnet nuget push artifacts/Astrolune.Sdk.1.0.0.nupkg `
-  --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+  --source "https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" `
   --api-key $TOKEN `
   --skip-duplicate
 ```
@@ -64,7 +64,7 @@ dotnet nuget push artifacts/Astrolune.Sdk.1.0.0.nupkg `
 2. Run:
 ```bash
 dotnet nuget push artifacts/*.nupkg `
-  --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+  --source "https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" `
   --skip-duplicate `
   --configfile publish-nuget.config
 ```
