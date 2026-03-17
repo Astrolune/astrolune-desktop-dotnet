@@ -60,3 +60,8 @@ PROJECT.md
 .packages/
 artifacts/
 legacy/
+
+# NuGet configs with credentials
+publish-nuget.config
+nuget.local.config
+*.nupkg.config
