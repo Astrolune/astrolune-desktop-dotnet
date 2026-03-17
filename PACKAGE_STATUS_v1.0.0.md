@@ -1,54 +1,107 @@
 # 📦 Package Publishing Status - v1.0.0
 
-## ✅ Published Packages
+## ✅ Published Packages (GitHub Packages Only)
 
-All packages have been built and are ready for GitHub Packages:
+All packages are built and published to GitHub Packages (no Releases created):
 
 ### 1. Astrolune.Sdk 1.0.0
-- **File**: `Astrolune.Sdk.1.0.0.nupkg` (28.3 KB)
 - **Status**: ✅ Built and packaged
-- **Repository**: https://github.com/Astrolune/astrolune-desktop-dotnet/releases/tag/sdk-v1.0.0
+- **Package Registry**: GitHub Packages
 - **Package ID**: `Astrolune.Sdk`
+- **File Size**: 28 KB
+- **Tag**: `sdk-v1.0.0`
 
 ### 2. Astrolune.Core.Module 1.0.0
-- **File**: `Astrolune.Core.Module.1.0.0.nupkg` (18.1 KB)
 - **Status**: ✅ Built and packaged
-- **Repository**: https://github.com/Astrolune/astrolune-desktop-dotnet/releases/tag/module-core-v1.0.0
+- **Package Registry**: GitHub Packages
 - **Package ID**: `Astrolune.Core.Module`
+- **File Size**: 18 KB
 - **Dependencies**: Astrolune.Media.Module 1.0.0
+- **Tag**: `module-core-v1.0.0`
 
 ### 3. Astrolune.Media.Module 1.0.0
-- **File**: `Astrolune.Media.Module.1.0.0.nupkg` (256.5 KB)
 - **Status**: ✅ Built and packaged
-- **Repository**: https://github.com/Astrolune/astrolune-desktop-dotnet/releases/tag/module-media-v1.0.0
+- **Package Registry**: GitHub Packages
 - **Package ID**: `Astrolune.Media.Module`
+- **File Size**: 251 KB
+- **Tag**: `module-media-v1.0.0`
 
-## 🚀 Publishing via GitHub Actions
+## 🚀 GitHub Actions Workflows
 
-Tags have been created and pushed to GitHub:
-- ✅ `sdk-v1.0.0` → Triggers `publish-sdk.yml` workflow
-- ✅ `module-core-v1.0.0` → Triggers `publish-modules.yml` workflow
-- ✅ `module-media-v1.0.0` → Triggers `publish-modules.yml` workflow
+### Publishing Workflows
+- **publish-sdk.yml** - Triggered by `sdk-v*` tags
+  - Builds and packs SDK
+  - Publishes to GitHub Packages
+  - No Release creation (packages only)
 
-GitHub Actions workflows will:
-1. Checkout code at tag
-2. Build packages
-3. Publish to GitHub Packages: `https://nuget.pkg.github.com/Astrolune/index.json`
-4. Create GitHub Releases automatically
+- **publish-modules.yml** - Triggered by `module-{core|media}-v*` tags
+  - Builds and packs specified module
+  - Publishes to GitHub Packages
+  - No Release creation (packages only)
 
-### Monitor Progress:
-- **Actions**: https://github.com/Astrolune/astrolune-desktop-dotnet/actions
-- **Packages**: https://github.com/Astrolune/astrolune-desktop-dotnet/packages
-- **Releases**: https://github.com/Astrolune/astrolune-desktop-dotnet/releases
+### Build Workflows
+- **build-modules.yml** - Builds SDK and modules independently
+  - Runs on pushes/PRs affecting modules
+  - Parallel builds for Media Module
+  - Serial builds with dependency ordering (Media → Core)
+  - Uploads artifacts for testing
+
+- **build-desktop.yml** - Builds entire desktop application
+  - Builds frontend (React/Vite)
+  - Builds SDK
+  - Builds all modules
+  - Builds core library and desktop app
+  - Runs all tests
+  - Uploads build artifacts
+
+- **ci.yml** - Main CI pipeline
+  - Runs on all pushes to main and PRs
+  - Builds modules in dependency order
+  - Builds full solution
+  - Runs test suite
+
+## 📍 Package Access
+
+### GitHub Packages Registry
+- **URL**: `https://nuget.pkg.github.com/Astrolune/index.json`
+- **Repository**: https://github.com/Astrolune/astrolune-desktop-dotnet/packages
+- **Packages Section**: https://github.com/Astrolune/astrolune-desktop-dotnet/pkgs/nuget
+
+### GitHub Actions
+- **Workflows**: https://github.com/Astrolune/astrolune-desktop-dotnet/actions
+- **build-modules**: https://github.com/Astrolune/astrolune-desktop-dotnet/actions/workflows/build-modules.yml
+- **build-desktop**: https://github.com/Astrolune/astrolune-desktop-dotnet/actions/workflows/build-desktop.yml
+
+## 🔧 Technical Improvements
+
+### Fixed Issues
+1. **NU5019 Error (module.manifest.json not found)**
+   - Replaced PowerShell-based copying with MSBuild Copy task
+   - Ensures manifest is in obj/ directory before packing
+   - Works reliably in GitHub Actions CI/CD
+
+2. **Removed Release Creation**
+   - Workflows no longer create GitHub Releases
+   - Packages now only in GitHub Packages registry
+   - Cleaner separation: Releases for application, Packages for libraries
+
+3. **Separate Build Workflows**
+   - Modules build independently
+   - Clear dependency ordering (Media Module → Core Module)
+   - Desktop app builds after all modules
+   - Frontend built as part of desktop workflow
 
 ## 📋 Installation Instructions
 
-### Before first use, create `nuget.config`:
+### 1. Configure NuGet Sources
+
+Create `nuget.config` in your project:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
     <add key="github" value="https://nuget.pkg.github.com/Astrolune/index.json" />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
   </packageSources>
   <packageSourceCredentials>
     <github>
@@ -59,47 +112,43 @@ GitHub Actions workflows will:
 </configuration>
 ```
 
-### Install packages:
+### 2. Create Personal Access Token
+
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate new token with `read:packages` and `write:packages` scopes
+3. Save token securely
+
+### 3. Install Packages
+
 ```bash
-# Install SDK in your module project
+# Install SDK for module development
 dotnet add package Astrolune.Sdk --version 1.0.0
 
-# Install modules if needed
+# Install modules if needed as dependencies
 dotnet add package Astrolune.Core.Module --version 1.0.0
 dotnet add package Astrolune.Media.Module --version 1.0.0
 ```
 
-## 🔧 GitHub Actions Workflow Fixes
+## 🔗 Related Documentation
 
-Fixed workflows to handle NuGet packing correctly:
+- Main docs: `README.md`
+- Publishing guide: `PUBLISHING_GUIDE.md`
+- Quick start: `QUICK_START_PUBLISHING.md`
 
-### publish-sdk.yml:
-- Added `dotnet build` step before packing
-- Ensures all MSBuild targets execute properly
-- Uses `--no-build` flag with pack to reuse build output
+## 📊 Build Artifacts
 
-### publish-modules.yml:
-- Added `dotnet build` step for each module before packing
-- Generates `module.manifest.json` in obj/Release correctly
-- Only packs the module matching the deployed tag
+Local build artifacts available in: `artifacts/`
 
-## 📊 Artifacts Location
-
-Local build artifacts located in:
+Cleanup between builds:
+```bash
+rm -rf artifacts/
+dotnet clean ./Astrolune.sln
 ```
-d:\Full dev\astrolune-project\astrolune-desktop-dotnet\artifacts\
-```
-
-## 🔗 Related Links
-
-- Main Repository: https://github.com/Astrolune/astrolune-desktop-dotnet
-- Publishing Guide: `PUBLISHING_GUIDE.md`
-- Quick Start: `QUICK_START_PUBLISHING.md`
-- .NET 10: https://dotnet.microsoft.com/en-us/download/dotnet/10.0
-- GitHub Packages: https://docs.github.com/en/packages
 
 ---
 
 **Last Updated**: 2026-03-17
-**Package Version**: 1.0.0
-**Status**: Ready for Publishing ✅
+**Status**: Ready for Production ✅
+**Publish Registry**: GitHub Packages (nuget.pkg.github.com)
+**Release Management**: Git tags trigger automated publishing
+
