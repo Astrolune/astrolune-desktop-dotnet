@@ -216,7 +216,7 @@ git push origin sdk-v1.0.0
 The workflow will:
 1. Extract version from tag (e.g., `1.0.0` from `sdk-v1.0.0`)
 2. Pack with version set to `1.0.0`
-3. Publish to `https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json`
+3. Publish to `https://nuget.pkg.github.com/Astrolune/index.json`
 
 ### Module Publishing
 
@@ -239,7 +239,7 @@ The workflow detects the module from tag, packs it with the correct version, and
 Configure `nuget.config`:
 ```xml
 <packageSources>
-  <add key="github" value="https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" />
+  <add key="github" value="https://nuget.pkg.github.com/Astrolune/index.json" />
 </packageSources>
 ```
 

@@ -29,7 +29,7 @@ git push origin sdk-v1.0.0
 - The `publish-sdk.yml` workflow is triggered
 - Workflow extracts version `1.0.0` from tag `sdk-v1.0.0`
 - Runs `dotnet pack` with `-p:PackageVersion=1.0.0`
-- Publishes to GitHub Packages: `https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json`
+- Publishes to GitHub Packages: `https://nuget.pkg.github.com/Astrolune/index.json`
 
 **Example releases:**
 - `sdk-v1.0.0` → Package version `1.0.0`
@@ -86,7 +86,7 @@ Create or update `nuget.config` in your project:
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
-    <add key="github" value="https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" />
+    <add key="github" value="https://nuget.pkg.github.com/Astrolune/index.json" />
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
   </packageSources>
   <packageSourceCredentials>

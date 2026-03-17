@@ -63,7 +63,7 @@ All packages are built and published to GitHub Packages (no Releases created):
 ## 📍 Package Access
 
 ### GitHub Packages Registry
-- **URL**: `https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json`
+- **URL**: `https://nuget.pkg.github.com/Astrolune/index.json`
 - **Repository**: https://github.com/Astrolune/astrolune-desktop-dotnet/packages
 - **Packages Section**: https://github.com/Astrolune/astrolune-desktop-dotnet/pkgs/nuget
 
@@ -100,7 +100,7 @@ Create `nuget.config` in your project:
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
-    <add key="github" value="https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json" />
+    <add key="github" value="https://nuget.pkg.github.com/Astrolune/index.json" />
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
   </packageSources>
   <packageSourceCredentials>

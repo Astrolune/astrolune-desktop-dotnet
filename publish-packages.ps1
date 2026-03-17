@@ -7,7 +7,7 @@ param(
     [string]$Token,
 
     [string]$PackageDir = "artifacts",
-    [string]$Source = "https://nuget.pkg.github.com/Astrolune/astrolune-desktop-dotnet/index.json"
+    [string]$Source = "https://nuget.pkg.github.com/Astrolune/index.json"
 )
 
 $packages = @(
