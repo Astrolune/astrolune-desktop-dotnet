@@ -24,12 +24,20 @@ jobs:
           $tag = "${{ github.ref }}" -replace "refs/tags/sdk-v", ""
           Write-Output "version=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
+      - name: Build SDK
+        shell: pwsh
+        run: |
+          dotnet build Astrolune.Sdk/Astrolune.Sdk.csproj `
+            -c Release `
+            -p:PackageVersion=${{ steps.version.outputs.version }}
+
       - name: Pack SDK
         shell: pwsh
         run: |
           dotnet pack Astrolune.Sdk/Astrolune.Sdk.csproj `
             -c Release `
             -o artifacts `
+            --no-build `
             -p:PackageVersion=${{ steps.version.outputs.version }}
 
       - name: Publish to GitHub Packages

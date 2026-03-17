@@ -36,6 +36,22 @@ jobs:
           Write-Output "module=$module" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           Write-Output "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
+      - name: Build Core Module
+        if: steps.tag_info.outputs.module == 'core'
+        shell: pwsh
+        run: |
+          dotnet build modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj `
+            -c Release `
+            -p:PackageVersion=${{ steps.tag_info.outputs.version }}
+
+      - name: Build Media Module
+        if: steps.tag_info.outputs.module == 'media'
+        shell: pwsh
+        run: |
+          dotnet build modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj `
+            -c Release `
+            -p:PackageVersion=${{ steps.tag_info.outputs.version }}
+
       - name: Pack Core Module
         if: steps.tag_info.outputs.module == 'core'
         shell: pwsh
@@ -43,6 +59,7 @@ jobs:
           dotnet pack modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj `
             -c Release `
             -o artifacts `
+            --no-build `
             -p:PackageVersion=${{ steps.tag_info.outputs.version }}
 
       - name: Pack Media Module
@@ -52,6 +69,7 @@ jobs:
           dotnet pack modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj `
             -c Release `
             -o artifacts `
+            --no-build `
             -p:PackageVersion=${{ steps.tag_info.outputs.version }}
 
       - name: Publish to GitHub Packages
