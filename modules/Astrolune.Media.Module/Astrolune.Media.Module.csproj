@@ -50,12 +50,12 @@
     </None>
   </ItemGroup>
 
-  <Target Name="MinifyModuleManifest" AfterTargets="Build" Condition="Exists('$(TargetDir)module.manifest.json')">
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$p='$(TargetDir)module.manifest.json'; $json=Get-Content -Raw $p | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 32; Set-Content -Path $p -Value $json -NoNewline -Encoding UTF8&quot;" />
-  </Target>
-
-  <Target Name="GenerateMinifiedManifestForPack" BeforeTargets="Pack" Condition="Exists('$(MSBuildProjectDirectory)\\module.manifest.json')">
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$src='$(MSBuildProjectDirectory)\\module.manifest.json'; $dst='$(MinifiedManifestPath)'; $dir=[System.IO.Path]::GetDirectoryName($dst); if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }; $json=Get-Content -Raw $src | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 32; Set-Content -Path $dst -Value $json -NoNewline -Encoding UTF8&quot;" />
+  <!-- Copy module.manifest.json to obj directory for packing -->
+  <Target Name="CopyManifestForPack" BeforeTargets="Pack">
+    <ItemGroup>
+      <ManifestFile Include="module.manifest.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ManifestFile)" DestinationFolder="$(BaseIntermediateOutputPath)$(Configuration)" />
   </Target>
 
 </Project>

@@ -61,14 +61,3 @@ jobs:
             }
           }
           Write-Host "Successfully published SDK version ${{ steps.version.outputs.version }}"
-
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: "SDK ${{ steps.version.outputs.version }}"
-          body: "Published Astrolune.Sdk version ${{ steps.version.outputs.version }} to GitHub Packages"
-          draft: false
-          prerelease: false

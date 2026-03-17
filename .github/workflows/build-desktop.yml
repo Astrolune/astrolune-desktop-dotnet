@@ -1,0 +1,105 @@
+name: Build Desktop Application
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths:
+      - "Astrolune.Desktop/**"
+      - "Astrolune.React/**"
+      - "Astrolune.Core/**"
+      - "Astrolune.Tests/**"
+      - "modules/**"
+      - "Astrolune.Sdk/**"
+      - ".github/workflows/build-desktop.yml"
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-desktop:
+    name: Build Desktop App (All Components)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Frontend Dependencies
+        shell: pwsh
+        run: |
+          cd Astrolune.React
+          npm ci
+
+      - name: Build Frontend
+        shell: pwsh
+        run: |
+          cd Astrolune.React
+          npm run build
+
+      - name: Restore .NET Projects
+        shell: pwsh
+        run: |
+          dotnet restore ./Astrolune.sln
+
+      - name: Build SDK
+        shell: pwsh
+        run: |
+          dotnet build Astrolune.Sdk/Astrolune.Sdk.csproj `
+            -c Release `
+            --no-restore `
+            -v minimal
+
+      - name: Build Media Module
+        shell: pwsh
+        run: |
+          dotnet build modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj `
+            -c Release `
+            --no-restore `
+            -v minimal
+
+      - name: Build Core Module
+        shell: pwsh
+        run: |
+          dotnet build modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj `
+            -c Release `
+            --no-restore `
+            -v minimal
+
+      - name: Build Core Library
+        shell: pwsh
+        run: |
+          dotnet build Astrolune.Core/Astrolune.Core.csproj `
+            -c Release `
+            --no-restore `
+            -v minimal
+
+      - name: Build Desktop Application
+        shell: pwsh
+        run: |
+          dotnet build Astrolune.Desktop/Astrolune.Desktop.csproj `
+            -c Release `
+            --no-restore `
+            -v minimal
+
+      - name: Run Tests
+        shell: pwsh
+        run: |
+          dotnet test Astrolune.Tests/Astrolune.Tests.csproj `
+            -c Release `
+            --no-build `
+            --verbosity minimal
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-app-build
+          path: Astrolune.Desktop/bin/Release/net10.0-windows10.0.19041.0/
+          retention-days: 7

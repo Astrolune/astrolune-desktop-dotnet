@@ -1,0 +1,118 @@
+name: Build Modules
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths:
+      - "modules/**"
+      - "Astrolune.Sdk/**"
+      - ".github/workflows/build-modules.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "modules/**"
+      - "Astrolune.Sdk/**"
+
+jobs:
+  build-media-module:
+    name: Build Media Module
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build Media Module
+        shell: pwsh
+        run: |
+          dotnet build modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj `
+            -c Release `
+            -v minimal
+
+      - name: Pack Media Module
+        shell: pwsh
+        run: |
+          dotnet pack modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj `
+            -c Release `
+            -o artifacts `
+            --no-build `
+            -v minimal
+
+      - name: Upload Media Module Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-module
+          path: artifacts/Astrolune.Media.Module.*.nupkg
+
+  build-core-module:
+    name: Build Core Module
+    needs: build-media-module
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build Core Module
+        shell: pwsh
+        run: |
+          dotnet build modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj `
+            -c Release `
+            -v minimal
+
+      - name: Pack Core Module
+        shell: pwsh
+        run: |
+          dotnet pack modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj `
+            -c Release `
+            -o artifacts `
+            --no-build `
+            -v minimal
+
+      - name: Upload Core Module Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-module
+          path: artifacts/Astrolune.Core.Module.*.nupkg
+
+  build-sdk:
+    name: Build SDK
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build SDK
+        shell: pwsh
+        run: |
+          dotnet build Astrolune.Sdk/Astrolune.Sdk.csproj `
+            -c Release `
+            -v minimal
+
+      - name: Pack SDK
+        shell: pwsh
+        run: |
+          dotnet pack Astrolune.Sdk/Astrolune.Sdk.csproj `
+            -c Release `
+            -o artifacts `
+            --no-build `
+            -v minimal
+
+      - name: Upload SDK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk
+          path: artifacts/Astrolune.Sdk.*.nupkg

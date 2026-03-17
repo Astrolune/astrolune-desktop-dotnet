@@ -7,7 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-test:
+  build-and-test:
+    name: Build and Test
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -23,26 +24,49 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Pack Local SDK
-        shell: pwsh
-        run: |
-          ./tools/PrepareLocalPackages.ps1
-
       - name: Install Frontend Dependencies
+        shell: pwsh
         run: |
           cd Astrolune.React
           npm ci
 
       - name: Build Frontend
+        shell: pwsh
         run: |
           cd Astrolune.React
           npm run build
 
-      - name: Restore
+      - name: Restore .NET Projects
+        shell: pwsh
         run: dotnet restore ./Astrolune.sln
 
-      - name: Build
-        run: dotnet build ./Astrolune.sln -c Release --no-restore
+      - name: Build SDK
+        shell: pwsh
+        run: |
+          dotnet build Astrolune.Sdk/Astrolune.Sdk.csproj `
+            -c Release `
+            --no-restore `
+            -v minimal
 
-      - name: Test
+      - name: Build Modules
+        shell: pwsh
+        run: |
+          dotnet build modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj -c Release --no-restore -v minimal
+          dotnet build modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj -c Release --no-restore -v minimal
+
+      - name: Build Solution
+        shell: pwsh
+        run: dotnet build ./Astrolune.sln -c Release --no-restore -v minimal
+
+      - name: Run Tests
+        shell: pwsh
         run: dotnet test ./Astrolune.sln -c Release --no-build --verbosity normal
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: "**/TestResults/"
+          retention-days: 7
+

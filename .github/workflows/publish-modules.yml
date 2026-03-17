@@ -93,14 +93,3 @@ jobs:
             }
           }
           Write-Host "Successfully published ${{ steps.tag_info.outputs.module }} module version ${{ steps.tag_info.outputs.version }}"
-
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: "${{ steps.tag_info.outputs.module == 'core' && 'Core Module' || 'Media Module' }} ${{ steps.tag_info.outputs.version }}"
-          body: "Published Astrolune.${{ steps.tag_info.outputs.module == 'core' && 'Core.Module' || 'Media.Module' }} version ${{ steps.tag_info.outputs.version }} to GitHub Packages"
-          draft: false
-          prerelease: false
