@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CsWin32RunAsBuildTask>true</CsWin32RunAsBuildTask>
+    <PlatformTarget>x64</PlatformTarget>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Authors>Astrolune</Authors>
+    <Company>Astrolune</Company>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Astrolune.Media.Module</PackageId>
+    <Version>1.0.0</Version>
+    <MinifiedManifestPath>$(MSBuildProjectDirectory)\\obj\\$(Configuration)\\module.manifest.json</MinifiedManifestPath>
+
+    <AssemblyName>Astrolune.Media.Module</AssemblyName>
+    <RootNamespace>Astrolune.Media.Module</RootNamespace>
+    <ModuleBuildConfiguration>Bundled</ModuleBuildConfiguration>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\artifacts</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Astrolune.Sdk\Astrolune.Sdk.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.269" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Windows.SDK.Win32Metadata" Version="69.0.7-preview" PrivateAssets="all" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="NativeMethods.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="module.manifest.json" Pack="false" PackagePath="contentFiles\\any\\any">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MinifiedManifestPath)" Pack="true" PackagePath="contentFiles\\any\\any" />
+    <None Update="module.config.json" Pack="true" PackagePath="contentFiles\\any\\any">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Remove="resources\\*.resx" />
+    <None Include="resources\\*.resx" Pack="true" PackagePath="contentFiles\\any\\any\\resources">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="MinifyModuleManifest" AfterTargets="Build" Condition="Exists('$(TargetDir)module.manifest.json')">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$p='$(TargetDir)module.manifest.json'; $json=Get-Content -Raw $p | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 32; Set-Content -Path $p -Value $json -NoNewline -Encoding UTF8&quot;" />
+  </Target>
+
+  <Target Name="GenerateMinifiedManifestForPack" BeforeTargets="Pack" Condition="Exists('$(MSBuildProjectDirectory)\\module.manifest.json')">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$src='$(MSBuildProjectDirectory)\\module.manifest.json'; $dst='$(MinifiedManifestPath)'; $dir=[System.IO.Path]::GetDirectoryName($dst); if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }; $json=Get-Content -Raw $src | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 32; Set-Content -Path $dst -Value $json -NoNewline -Encoding UTF8&quot;" />
+  </Target>
+
+</Project>

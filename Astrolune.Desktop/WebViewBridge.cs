@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Astrolune.Core.Services;
+using Astrolune.Sdk.Services;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
@@ -8,15 +8,21 @@ namespace Astrolune.Desktop;
 public sealed class WebViewBridge
 {
     private readonly BridgeCommandRouter _router;
-    private readonly EventDispatcher _dispatcher;
+    private readonly IEventDispatcherHost _dispatcherHost;
+    private readonly IEventDispatcher _dispatcher;
     private readonly AuthCallbackManager _authCallbacks;
     private readonly JsonSerializerOptions _jsonOptions;
     private WebView2? _webView;
     private CoreWebView2? _core;
 
-    public WebViewBridge(BridgeCommandRouter router, EventDispatcher dispatcher, AuthCallbackManager authCallbacks)
+    public WebViewBridge(
+        BridgeCommandRouter router,
+        IEventDispatcherHost dispatcherHost,
+        IEventDispatcher dispatcher,
+        AuthCallbackManager authCallbacks)
     {
         _router = router;
+        _dispatcherHost = dispatcherHost;
         _dispatcher = dispatcher;
         _authCallbacks = authCallbacks;
         _jsonOptions = new JsonSerializerOptions
@@ -41,7 +47,7 @@ public sealed class WebViewBridge
         }
         _core.WebMessageReceived += OnWebMessageReceived;
 
-        _dispatcher.AttachSink(EmitAsync);
+        _dispatcherHost.AttachSink(EmitAsync);
         await _authCallbacks.FlushAsync(_dispatcher).ConfigureAwait(true);
 
         if (options.UseDevServer)

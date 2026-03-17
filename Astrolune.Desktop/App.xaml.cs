@@ -2,12 +2,16 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows;
-using Astrolune.Core.Services;
+using Astrolune.Sdk.Modules;
+using Astrolune.Sdk.Services;
+using Astrolune.Desktop.Modules;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Win32;
 
 namespace Astrolune.Desktop;
@@ -19,6 +23,7 @@ public partial class App : Application
     private CancellationTokenSource? _deeplinkCts;
     private Task? _deeplinkServerTask;
     private AuthCallbackManager? _authCallbacks;
+    private ModuleLoader? _moduleLoader;
 
     private const string InstanceMutexName = "Astrolune.Desktop.SingleInstance";
     private const string DeepLinkPipeName = "Astrolune.Desktop.DeepLinkPipe";
@@ -33,42 +38,157 @@ public partial class App : Application
             return;
         }
 
-        _host = Host.CreateDefaultBuilder()
-            .ConfigureServices(services =>
-            {
-                services.AddSingleton<AuthClientLauncher>();
-                services.AddSingleton<AuthCallbackManager>();
-                services.AddSingleton<EventDispatcher>();
-                services.AddSingleton<IEventDispatcher>(sp => sp.GetRequiredService<EventDispatcher>());
-                services.AddSingleton<CaptureService>();
-                services.AddSingleton<MediaService>();
-                services.AddSingleton<KeyringService>();
-                services.AddSingleton<MediaProbe>();
-                services.AddSingleton<BridgeCommandRouter>();
-                services.AddSingleton<WebViewBridge>();
-                services.AddSingleton<MainWindow>();
-                services.AddSingleton<SplashWindow>();
-            })
-            .Build();
-
-        await _host.StartAsync().ConfigureAwait(false);
-
-        _authCallbacks = _host.Services.GetRequiredService<AuthCallbackManager>();
-        var authLauncher = _host.Services.GetRequiredService<AuthClientLauncher>();
-        RegisterProtocolHandler(authLauncher.CallbackScheme);
-        StartDeepLinkServer(authLauncher.CallbackScheme);
-        ProcessDeepLinkArgs(e.Args, authLauncher.CallbackScheme);
-
-        var splash = _host.Services.GetRequiredService<SplashWindow>();
-        var main = _host.Services.GetRequiredService<MainWindow>();
-        MainWindow = main;
-
+        var splashState = new SplashState();
+        var splash = new SplashWindow(splashState);
         splash.Show();
-        main.Hide();
 
-        _ = Task.Run(async () =>
+        void UpdateSplash(string step, double progress)
         {
-            var probe = _host.Services.GetRequiredService<MediaProbe>();
+            splash.Dispatcher.Invoke(() =>
+            {
+                splashState.CurrentStep = step;
+                splashState.Progress = progress;
+            });
+        }
+
+        void SetWarning(string warning)
+        {
+            splash.Dispatcher.Invoke(() => splashState.Warning = warning);
+        }
+
+        void SetError(string error)
+        {
+            splash.Dispatcher.Invoke(() => splashState.Error = error);
+        }
+
+        try
+        {
+            UpdateSplash("Initializing", 0.05);
+
+            var registry = new ModuleRegistry();
+            var prompt = new WpfModuleUserPrompt();
+            var permissionStore = new ModulePermissionStore(GetPermissionStorePath());
+            var permissionService = new ModulePermissionService(permissionStore, prompt);
+            var signatureVerifier = new ModuleSignatureVerifier();
+
+            var hostVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version(1, 0, 0, 0);
+            var sdkVersion = typeof(IModule).Assembly.GetName().Version ?? new Version(1, 0, 0, 0);
+            var modulesRoot = Path.Combine(AppContext.BaseDirectory, "modules");
+            var loaderOptions = new ModuleLoaderOptions
+            {
+                ModulesRoot = modulesRoot,
+                HostVersion = hostVersion,
+                SdkVersion = sdkVersion
+            };
+
+            var updateStatePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Astrolune",
+                "module-updates.json");
+            var updateOptions = new ModuleUpdateOptions
+            {
+                IsEnabled = true,
+                CheckInterval = TimeSpan.FromHours(1),
+                StatePath = updateStatePath
+            };
+
+            var updateState = new ModuleUpdateStateStore(updateOptions.StatePath ?? updateStatePath);
+            var moduleLoader = new ModuleLoader(
+                loaderOptions,
+                registry,
+                signatureVerifier,
+                permissionService,
+                prompt,
+                NullLogger<ModuleLoader>.Instance);
+            _moduleLoader = moduleLoader;
+            var moduleUpdater = new ModuleUpdater(
+                updateOptions,
+                loaderOptions,
+                registry,
+                signatureVerifier,
+                prompt,
+                updateState,
+                NullLogger<ModuleUpdater>.Instance);
+
+            UpdateSplash("Checking for module updates", 0.15);
+            var initialCandidates = moduleLoader.DiscoverModules();
+            var manifests = initialCandidates.Select(candidate => candidate.Manifest).ToList();
+            var totalModules = Math.Max(1, manifests.Count);
+            var completed = 0;
+            var updateProgress = new Progress<ModuleUpdateProgress>(progress =>
+            {
+                if (progress.Stage is ModuleUpdateStage.Skipped or ModuleUpdateStage.Failed or ModuleUpdateStage.Staged)
+                {
+                    completed++;
+                    var ratio = Math.Clamp((double)completed / totalModules, 0, 1);
+                    UpdateSplash("Checking for module updates", 0.15 + (0.2 * ratio));
+                }
+            });
+            await moduleUpdater.RunUpdateCheckAsync(manifests, updateProgress, CancellationToken.None).ConfigureAwait(false);
+
+            UpdateSplash("Applying pending updates", 0.35);
+            moduleLoader.ApplyPendingUpdates();
+
+            UpdateSplash("Verifying modules", 0.45);
+            var ordered = moduleLoader.VerifyAndOrderModules(moduleLoader.DiscoverModules());
+
+            UpdateSplash("Loading modules", 0.55);
+            _host = Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton(splashState);
+                    services.AddSingleton(splash);
+                    services.AddSingleton<AuthClientLauncher>();
+                    services.AddSingleton<AuthCallbackManager>();
+                    services.AddSingleton<BridgeCommandRouter>();
+                    services.AddSingleton<WebViewBridge>();
+                    services.AddSingleton<MainWindow>();
+
+                    services.AddSingleton(registry);
+                    services.AddSingleton<IModuleRegistry>(registry);
+                    services.AddSingleton(prompt);
+                    services.AddSingleton<IModuleUserPrompt>(prompt);
+                    services.AddSingleton(permissionStore);
+                    services.AddSingleton<IModulePermissionService>(permissionService);
+                    services.AddSingleton(signatureVerifier);
+                    services.AddSingleton(loaderOptions);
+                    services.AddSingleton(updateOptions);
+                    services.AddSingleton(updateState);
+                    services.AddSingleton(moduleLoader);
+                    services.AddSingleton(moduleUpdater);
+
+                    moduleLoader.LoadModules(ordered, services);
+                })
+                .Build();
+
+            await _host.StartAsync().ConfigureAwait(false);
+
+            _authCallbacks = _host.Services.GetRequiredService<AuthCallbackManager>();
+            var authLauncher = _host.Services.GetRequiredService<AuthClientLauncher>();
+            RegisterProtocolHandler(authLauncher.CallbackScheme);
+            StartDeepLinkServer(authLauncher.CallbackScheme);
+            ProcessDeepLinkArgs(e.Args, authLauncher.CallbackScheme);
+
+            var main = _host.Services.GetRequiredService<MainWindow>();
+            MainWindow = main;
+            main.Hide();
+
+            UpdateSplash("Starting services", 0.75);
+            await moduleLoader.InitializeModulesAsync(CancellationToken.None).ConfigureAwait(false);
+
+            UpdateSplash("Health checks", 0.85);
+            await moduleLoader.RunInitialHealthChecksAsync(CancellationToken.None).ConfigureAwait(false);
+            moduleLoader.StartHealthMonitor();
+
+            var warningModules = registry.Modules
+                .Where(info => info.Status is ModuleStatus.Degraded or ModuleStatus.Failed or ModuleStatus.Disabled)
+                .ToList();
+            if (warningModules.Count > 0)
+            {
+                SetWarning($"Some modules are not healthy: {string.Join(", ", warningModules.Select(info => info.Id))}");
+            }
+
+            var probe = _host.Services.GetRequiredService<IMediaProbe>();
             try
             {
                 await probe.RunAsync().ConfigureAwait(false);
@@ -78,6 +198,7 @@ public partial class App : Application
                 // Startup probe errors are surfaced to the UI via events.
             }
 
+            UpdateSplash("Ready", 1.0);
             await Dispatcher.InvokeAsync(() =>
             {
                 if (splash.IsVisible)
@@ -88,7 +209,11 @@ public partial class App : Application
                 main.Activate();
                 ShutdownMode = ShutdownMode.OnMainWindowClose;
             });
-        });
+        }
+        catch (Exception ex)
+        {
+            SetError($"Startup failed: {ex.Message}");
+        }
     }
 
     protected override async void OnExit(ExitEventArgs e)
@@ -106,6 +231,11 @@ public partial class App : Application
         {
             await _host.StopAsync().ConfigureAwait(false);
             _host.Dispose();
+        }
+
+        if (_moduleLoader is not null)
+        {
+            await _moduleLoader.StopAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
         _instanceMutex?.ReleaseMutex();
@@ -131,15 +261,26 @@ public partial class App : Application
             return;
         }
 
-        var frontendRoot = Path.GetFullPath(Path.Combine(
-            AppContext.BaseDirectory,
-            "..",
-            "..",
-            "..",
-            "..",
-            "frontend"));
+        // Пробуем найти Astrolune.React в разных местах
+        var possiblePaths = new[]
+        {
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Astrolune.React")),
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "Astrolune.React")),
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "Astrolune.React")),
+            Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "Astrolune.React"))
+        };
 
-        if (!Directory.Exists(frontendRoot))
+        string? frontendRoot = null;
+        foreach (var path in possiblePaths)
+        {
+            if (Directory.Exists(path) && File.Exists(Path.Combine(path, "package.json")))
+            {
+                frontendRoot = path;
+                break;
+            }
+        }
+
+        if (string.IsNullOrEmpty(frontendRoot))
         {
             return;
         }
@@ -351,5 +492,11 @@ public partial class App : Application
 
         using var shell = key.CreateSubKey(@"shell\open\command");
         shell?.SetValue(string.Empty, $"\"{exePath}\" \"%1\"");
+    }
+
+    private static string GetPermissionStorePath()
+    {
+        var root = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        return Path.Combine(root, "Astrolune", "module-permissions.dat");
     }
 }

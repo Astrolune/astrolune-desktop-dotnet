@@ -1,0 +1,197 @@
+name: CI/CD - Build & Release
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  NODE_VERSION: '20'
+  APP_NAME: Astrolune
+  RELEASE_DIR: publish
+
+jobs:
+  build:
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Version
+        id: version
+        shell: pwsh
+        run: |
+          $version = "1.0.0"
+          if ($env:GITHUB_REF.StartsWith('refs/tags/v')) {
+            $version = $env:GITHUB_REF.Substring('refs/tags/v'.Length)
+          } else {
+            $sha = $env:GITHUB_SHA.Substring(0, 7)
+            $version = "1.0.0-dev+$sha"
+          }
+          Write-Host "Version: $version"
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Pack Local SDK
+        shell: pwsh
+        run: |
+          ./tools/PrepareLocalPackages.ps1
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd Astrolune.React
+          npm ci
+
+      - name: Build Frontend
+        run: |
+          cd Astrolune.React
+          npm run build
+
+      - name: Restore .NET Dependencies
+        run: dotnet restore ./Astrolune.sln
+
+      - name: Sign Modules (if key available)
+        shell: pwsh
+        env:
+          MODULE_PRIVATE_KEY: ${{ secrets.MODULE_PRIVATE_KEY }}
+        run: |
+          if (-not $env:MODULE_PRIVATE_KEY) {
+            Write-Host "MODULE_PRIVATE_KEY not set, skipping module signing"
+            exit 0
+          }
+
+          $modules = @('Astrolune.Core.Module', 'Astrolune.Media.Module')
+          foreach ($module in $modules) {
+            $manifest = "modules\$module\bin\Release\$module\module.manifest.json"
+            $dll = "modules\$module\bin\Release\$module\$module.dll"
+            $sig = "modules\$module\bin\Release\$module\module.sig"
+
+            if (Test-Path $manifest -and Test-Path $dll) {
+              dotnet run --project tools/ModuleSigner/ModuleSigner.csproj -- `
+                --manifest "$manifest" `
+                --dll "$dll" `
+                --out "$sig" `
+                --private-key "$env:MODULE_PRIVATE_KEY"
+            }
+          }
+
+      - name: Build Desktop App
+        run: dotnet build Astrolune.Desktop/Astrolune.Desktop.csproj -c Release --no-restore
+
+      - name: Run Tests
+        run: dotnet test ./Astrolune.sln -c Release --no-build --verbosity normal
+
+      - name: Publish Desktop App
+        run: |
+          dotnet publish Astrolune.Desktop/Astrolune.Desktop.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained `
+            -p:PublishSingleFile=true `
+            -p:PublishReadyToRun=true `
+            -p:Version=${{ steps.version.outputs.version }} `
+            -o ${{ env.RELEASE_DIR }}
+
+      - name: Bundle Modules
+        shell: pwsh
+        run: |
+          ./tools/BundleModules.ps1 -ConfigPath ./installer/modules.build.json -OutputRoot ${{ env.RELEASE_DIR }}
+
+      - name: Copy Frontend to Publish
+        shell: pwsh
+        run: |
+          $publishApp = "${{ env.RELEASE_DIR }}\app"
+          if (Test-Path $publishApp) {
+            Remove-Item $publishApp -Recurse -Force
+          }
+          Copy-Item -Path "Astrolune.React\dist" -Destination $publishApp -Recurse
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: astrolune-desktop-${{ steps.version.outputs.version }}
+          path: ${{ env.RELEASE_DIR }}
+          retention-days: 30
+
+  create-installer:
+    needs: build
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: astrolune-desktop-${{ needs.build.outputs.version }}
+          path: ${{ env.RELEASE_DIR }}
+
+      - name: Setup Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y
+          RefreshEnv
+
+      - name: Generate Installer Module List
+        shell: pwsh
+        run: |
+          ./tools/GenerateInstallerModules.ps1 -ConfigPath ./installer/modules.build.json -OutputPath ./installer/installer.modules.iss
+
+      - name: Build Installer
+        shell: pwsh
+        run: |
+          iscc installer/installer.iss
+          Write-Host "Installer created:"
+          Get-ChildItem installer\*.exe
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: astrolune-installer-${{ needs.build.outputs.version }}
+          path: installer\*.exe
+          retention-days: 30
+
+  release:
+    needs: [build, create-installer]
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: astrolune-desktop-${{ needs.build.outputs.version }}
+          path: ${{ env.RELEASE_DIR }}
+
+      - name: Download Installer
+        uses: actions/download-artifact@v4
+        with:
+          name: astrolune-installer-${{ needs.build.outputs.version }}
+          path: installer
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Astrolune v${{ needs.build.outputs.version }}
+          files: |
+            installer/*.exe
+          generate_release_notes: true
+          draft: true

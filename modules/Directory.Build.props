@@ -1,0 +1,42 @@
+<Project>
+  <!-- Общие свойства для всех модулей Astrolune -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Authors>Astrolune</Authors>
+    <Company>Astrolune</Company>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
+    <!-- Build configuration: Bundled = built with client, Standalone = separate, None = not built -->
+    <ModuleBuildConfiguration Condition="'$(ModuleBuildConfiguration)' == ''">Bundled</ModuleBuildConfiguration>
+  </PropertyGroup>
+
+  <!-- Копирование метаданных модуля в выходную папку -->
+  <ItemGroup>
+    <None Update="module.manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="module.sig">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="module.config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- Пропуск сборки если ModuleBuildConfiguration = None -->
+  <PropertyGroup Condition="'$(ModuleBuildConfiguration)' == 'None'">
+    <SkipBuild>true</SkipBuild>
+  </PropertyGroup>
+
+  <!-- Minify module.manifest.json after build for runtime performance -->
+  <Target Name="MinifyModuleManifest" AfterTargets="Build">
+    <PropertyGroup>
+      <ManifestPath>$(TargetDir)module.manifest.json</ManifestPath>
+    </PropertyGroup>
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;if (Test-Path '$(ManifestPath)') { $json = Get-Content -Raw '$(ManifestPath)' | ConvertFrom-Json; $json | ConvertTo-Json -Compress | Set-Content -NoNewline '$(ManifestPath)' }&quot;" />
+  </Target>
+
+</Project>

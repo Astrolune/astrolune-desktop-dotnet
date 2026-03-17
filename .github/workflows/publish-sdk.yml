@@ -1,0 +1,66 @@
+name: Publish SDK
+
+on:
+  push:
+    tags:
+      - "sdk-v*"
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Extract version from tag
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref }}" -replace "refs/tags/sdk-v", ""
+          Write-Output "version=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Pack SDK
+        shell: pwsh
+        run: |
+          dotnet pack Astrolune.Sdk/Astrolune.Sdk.csproj `
+            -c Release `
+            -o artifacts `
+            -p:PackageVersion=${{ steps.version.outputs.version }}
+
+      - name: Publish to GitHub Packages
+        shell: pwsh
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $packages = Get-ChildItem artifacts/*.nupkg
+          if ($packages.Count -eq 0) {
+            Write-Error "No packages found in artifacts directory"
+            exit 1
+          }
+          foreach ($pkg in $packages) {
+            dotnet nuget push $pkg `
+              --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+              --api-key $env:NUGET_AUTH_TOKEN `
+              --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Failed to push package: $($pkg.Name)"
+              exit $LASTEXITCODE
+            }
+          }
+          Write-Host "Successfully published SDK version ${{ steps.version.outputs.version }}"
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: "SDK ${{ steps.version.outputs.version }}"
+          body: "Published Astrolune.Sdk version ${{ steps.version.outputs.version }} to GitHub Packages"
+          draft: false
+          prerelease: false

@@ -3,7 +3,10 @@ using System.Linq;
 
 namespace Astrolune.Core.Services;
 
-public sealed class KeyringService
+/// <summary>
+/// Implementation of IKeyringService for secure credential storage.
+/// </summary>
+public sealed class KeyringService : IKeyringService
 {
     private readonly string _storageRoot;
 
@@ -14,38 +17,31 @@ public sealed class KeyringService
         Directory.CreateDirectory(_storageRoot);
     }
 
-    /// <summary>
-    /// Retrieves a password stored under the given service/key combination.
-    /// </summary>
-    public Task<string?> GetPasswordAsync(string service, string key)
+    /// <inheritdoc />
+    public async Task<string?> GetPasswordAsync(string service, string key, CancellationToken cancellationToken = default)
     {
         var path = BuildPath(service, key);
         if (!File.Exists(path))
         {
-            return Task.FromResult<string?>(null);
+            return null;
         }
 
-        var encrypted = File.ReadAllBytes(path);
+        var encrypted = await File.ReadAllBytesAsync(path, cancellationToken).ConfigureAwait(false);
         var raw = ProtectedData.Unprotect(encrypted, null, DataProtectionScope.CurrentUser);
-        return Task.FromResult<string?>(System.Text.Encoding.UTF8.GetString(raw));
+        return System.Text.Encoding.UTF8.GetString(raw);
     }
 
-    /// <summary>
-    /// Stores a password under the given service/key combination.
-    /// </summary>
-    public Task SetPasswordAsync(string service, string key, string password)
+    /// <inheritdoc />
+    public async Task SetPasswordAsync(string service, string key, string password, CancellationToken cancellationToken = default)
     {
         var path = BuildPath(service, key);
         var raw = System.Text.Encoding.UTF8.GetBytes(password);
         var encrypted = ProtectedData.Protect(raw, null, DataProtectionScope.CurrentUser);
-        File.WriteAllBytes(path, encrypted);
-        return Task.CompletedTask;
+        await File.WriteAllBytesAsync(path, encrypted, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Deletes a stored password for the given service/key combination.
-    /// </summary>
-    public Task DeletePasswordAsync(string service, string key)
+    /// <inheritdoc />
+    public Task DeletePasswordAsync(string service, string key, CancellationToken cancellationToken = default)
     {
         var path = BuildPath(service, key);
         if (File.Exists(path))

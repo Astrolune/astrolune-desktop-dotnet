@@ -127,17 +127,40 @@ public partial class MainWindow : Window
                            string.Equals(Environment.GetEnvironmentVariable("ASTROLUNE_USE_DEVSERVER"), "1",
                                StringComparison.OrdinalIgnoreCase);
 
-        var outputFrontend = Path.Combine(AppContext.BaseDirectory, "frontend");
-        var fallbackFrontend = Path.GetFullPath(Path.Combine(
-            AppContext.BaseDirectory,
-            "..",
-            "..",
-            "..",
-            "..",
-            "frontend",
-            "dist"));
+        // Путь к собранному фронтенду в выходной папке (app/)
+        var outputApp = Path.Combine(AppContext.BaseDirectory, "app");
+        
+        // Резервные пути к фронтенду
+        var possiblePaths = new[]
+        {
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Astrolune.React", "dist")),
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "Astrolune.React", "dist")),
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "Astrolune.React", "dist")),
+            Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "Astrolune.React", "dist"))
+        };
 
-        var frontendFolder = Directory.Exists(outputFrontend) ? outputFrontend : fallbackFrontend;
+        string? frontendFolder = null;
+        
+        // Сначала проверяем выходную папку
+        if (Directory.Exists(outputApp) && File.Exists(Path.Combine(outputApp, "index.html")))
+        {
+            frontendFolder = outputApp;
+        }
+        else
+        {
+            // Ищем dist папку в возможных путях
+            foreach (var path in possiblePaths)
+            {
+                if (Directory.Exists(path) && File.Exists(Path.Combine(path, "index.html")))
+                {
+                    frontendFolder = path;
+                    break;
+                }
+            }
+        }
+
+        // Если ничего не найдено, используем outputApp по умолчанию
+        frontendFolder ??= outputApp;
 
         return new WebViewHostOptions
         {

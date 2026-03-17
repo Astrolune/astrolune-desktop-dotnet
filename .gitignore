@@ -52,3 +52,11 @@ pnpm-debug.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# Other
+QWEN.md
+TASK.md
+PROJECT.md
+.packages/
+artifacts/
+legacy/

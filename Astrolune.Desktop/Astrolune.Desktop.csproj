@@ -1,46 +1,78 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <OutputType>WinExe</OutputType>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>12</LangVersion>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <LangVersion>latest</LangVersion>
+    <Authors>Astrolune</Authors>
+    <Company>Astrolune</Company>
+    
+    <!-- Красивые имена файлов -->
+    <AssemblyName>astrolune</AssemblyName>
+    <RootNamespace>Astrolune.Desktop</RootNamespace>
+    <OutputName>astrolune</OutputName>
   </PropertyGroup>
 
+  <!-- Настройки фронтенда -->
   <PropertyGroup>
-    <FrontendRoot Condition="Exists('$(ProjectDir)..\Astrolune.React\')">$(ProjectDir)..\Astrolune.React\</FrontendRoot>
-    <FrontendRoot Condition="'$(FrontendRoot)'==''">$(ProjectDir)..\frontend\</FrontendRoot>
-    <FrontendDist>$(FrontendRoot)dist\index.html</FrontendDist>
-    <FrontendNodeModules>$(FrontendRoot)node_modules</FrontendNodeModules>
+    <FrontendRoot>$(MSBuildThisFileDirectory)..\Astrolune.React\</FrontendRoot>
+    <FrontendDist>$(FrontendRoot)dist\</FrontendDist>
+    <FrontendNodeModules>$(FrontendRoot)node_modules\</FrontendNodeModules>
+    <FrontendOutputName>app</FrontendOutputName>
     <AstroluneDevServerUrl>http://localhost:5173</AstroluneDevServerUrl>
-    <AstroluneStartDevServer Condition="'$(Configuration)'=='Debug' and '$(BuildingInsideVisualStudio)'=='true' and '$(DesignTimeBuild)'!='true'">true</AstroluneStartDevServer>
+    
+    <!-- Dev server запускается только в Debug режиме вне Visual Studio -->
+    <AstroluneStartDevServer Condition="'$(Configuration)'=='Debug' and '$(BuildingInsideVisualStudio)'!='true' and '$(DesignTimeBuild)'!='true'">true</AstroluneStartDevServer>
   </PropertyGroup>
 
+  <!-- Запуск Vite dev server в режиме разработки -->
   <Target Name="StartViteDevServer" BeforeTargets="Build" Condition="'$(AstroluneStartDevServer)'=='true'">
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$port=5173; $running=Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue; if (-not $running) { Start-Process -WindowStyle Minimized -WorkingDirectory '$(FrontendRoot)' 'cmd.exe' '/c npm run dev'; }&quot;" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$port=5173; $running=Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue; if (-not $running) { Start-Process -WindowStyle Minimized -WorkingDirectory '$(FrontendRoot)' 'cmd.exe' '/c npm run dev'; Start-Sleep -Seconds 3 }&quot;" />
   </Target>
 
-  <Target Name="BuildFrontend" BeforeTargets="Build" Condition="'$(AstroluneStartDevServer)'!='true' and '$(DesignTimeBuild)'!='true'">
-    <Exec Command="npm install" WorkingDirectory="$(FrontendRoot)" Condition="!Exists('$(FrontendNodeModules)')" />
+  <!-- Сборка фронтенда в Release режиме или при сборке -->
+  <Target Name="BuildFrontend" BeforeTargets="Build" 
+          Condition="'$(AstroluneStartDevServer)'!='true' and '$(DesignTimeBuild)'!='true' and '$(SkipFrontendBuild)'!='true'">
+    <Message Importance="high" Text="Building frontend from $(FrontendRoot)..." />
+    <Exec Command="npm install" WorkingDirectory="$(FrontendRoot)" 
+          Condition="!Exists('$(FrontendNodeModules)')" />
     <Exec Command="npm run build" WorkingDirectory="$(FrontendRoot)" />
   </Target>
 
+  <!-- Копирование файлов фронтенда в выходную папку -->
   <ItemGroup>
-    <ProjectReference Include="..\Astrolune.Core\Astrolune.Core.csproj" />
+    <FrontendContent Include="$(FrontendDist)**\*.*" Exclude="$(FrontendDist)**\*.map">
+      <Link>$(FrontendOutputName)\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </FrontendContent>
   </ItemGroup>
 
+  <!-- Ссылки на проекты -->
+  <ItemGroup>
+    <PackageReference Include="Astrolune.Sdk" Version="1.0.0" />
+  </ItemGroup>
+
+  <!-- NuGet пакеты -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2849.39" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="NSec.Cryptography" Version="24.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="$(FrontendRoot)dist\**\*.*" Link="frontend\%(RecursiveDir)%(Filename)%(Extension)">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+  <!-- Bundle selected modules into the app output using JSON config -->
+  <Target Name="PackModulesForBundle" BeforeTargets="BundleModules" Condition="'$(Configuration)'=='Release' and '$(DesignTimeBuild)'!='true'">
+    <Exec Command="dotnet msbuild &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Core.Module\Astrolune.Core.Module.csproj&quot; -t:GenerateMinifiedManifestForPack -p:Configuration=$(Configuration)" />
+    <Exec Command="dotnet pack &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Core.Module\Astrolune.Core.Module.csproj&quot; -c $(Configuration) -o &quot;$(MSBuildThisFileDirectory)..\artifacts&quot;" />
+    <Exec Command="dotnet msbuild &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Media.Module\Astrolune.Media.Module.csproj&quot; -t:GenerateMinifiedManifestForPack -p:Configuration=$(Configuration)" />
+    <Exec Command="dotnet pack &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Media.Module\Astrolune.Media.Module.csproj&quot; -c $(Configuration) -o &quot;$(MSBuildThisFileDirectory)..\artifacts&quot;" />
+  </Target>
+
+  <Target Name="BundleModules" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\tools\BundleModules.ps1&quot; -ConfigPath &quot;$(MSBuildThisFileDirectory)..\installer\modules.build.json&quot; -OutputRoot &quot;$(TargetDir.TrimEnd('\\'))&quot;" />
+  </Target>
 </Project>

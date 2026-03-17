@@ -1,0 +1,12 @@
+{
+  "modules": [
+    {
+      "id": "Astrolune.Core.Module",
+      "packagePath": "..\\artifacts\\Astrolune.Core.Module.1.0.0.nupkg"
+    },
+    {
+      "id": "Astrolune.Media.Module",
+      "packagePath": "..\\artifacts\\Astrolune.Media.Module.1.0.0.nupkg"
+    }
+  ]
+}

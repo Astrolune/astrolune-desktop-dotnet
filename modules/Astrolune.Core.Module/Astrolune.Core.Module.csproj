@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Authors>Astrolune</Authors>
+    <Company>Astrolune</Company>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Astrolune.Core.Module</PackageId>
+    <Version>1.0.0</Version>
+    <MinifiedManifestPath>$(MSBuildProjectDirectory)\\obj\\$(Configuration)\\module.manifest.json</MinifiedManifestPath>
+    
+    <!-- Assembly naming -->
+    <AssemblyName>Astrolune.Core.Module</AssemblyName>
+    <RootNamespace>Astrolune.Core.Module</RootNamespace>
+    
+    <!-- Build configuration: Bundled = built with client, Standalone = separate, None = not built -->
+    <ModuleBuildConfiguration>Bundled</ModuleBuildConfiguration>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\artifacts</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reference to SDK for interfaces and models -->
+    <ProjectReference Include="..\..\Astrolune.Sdk\Astrolune.Sdk.csproj" />
+    
+    <!-- Reference to Core implementation -->
+    <ProjectReference Include="..\..\Astrolune.Core\Astrolune.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copy module manifest to output and pack into nupkg -->
+    <None Update="module.manifest.json" Pack="false" PackagePath="contentFiles\\any\\any">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MinifiedManifestPath)" Pack="true" PackagePath="contentFiles\\any\\any" />
+    <None Update="module.config.json" Pack="true" PackagePath="contentFiles\\any\\any">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Remove="resources\\*.resx" />
+    <None Include="resources\\*.resx" Pack="true" PackagePath="contentFiles\\any\\any\\resources">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="MinifyModuleManifest" AfterTargets="Build" Condition="Exists('$(TargetDir)module.manifest.json')">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$p='$(TargetDir)module.manifest.json'; $json=Get-Content -Raw $p | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 32; Set-Content -Path $p -Value $json -NoNewline -Encoding UTF8&quot;" />
+  </Target>
+
+  <Target Name="GenerateMinifiedManifestForPack" BeforeTargets="Pack" Condition="Exists('$(MSBuildProjectDirectory)\\module.manifest.json')">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$src='$(MSBuildProjectDirectory)\\module.manifest.json'; $dst='$(MinifiedManifestPath)'; $dir=[System.IO.Path]::GetDirectoryName($dst); if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }; $json=Get-Content -Raw $src | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 32; Set-Content -Path $dst -Value $json -NoNewline -Encoding UTF8&quot;" />
+  </Target>
+
+</Project>

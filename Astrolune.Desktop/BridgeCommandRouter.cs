@@ -1,24 +1,24 @@
 using System.Text.Json;
 using System.Windows;
-using Astrolune.Core.Models;
-using Astrolune.Core.Services;
+using Astrolune.Sdk.Models;
+using Astrolune.Sdk.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Astrolune.Desktop;
 
 public sealed class BridgeCommandRouter
 {
-    private readonly CaptureService _capture;
-    private readonly MediaService _media;
-    private readonly KeyringService _keyring;
+    private readonly ICaptureService _capture;
+    private readonly IMediaService _media;
+    private readonly IKeyringService _keyring;
     private readonly AuthClientLauncher _authClient;
     private readonly IServiceProvider _services;
     private readonly JsonSerializerOptions _jsonOptions;
 
     public BridgeCommandRouter(
-        CaptureService capture,
-        MediaService media,
-        KeyringService keyring,
+        ICaptureService capture,
+        IMediaService media,
+        IKeyringService keyring,
         AuthClientLauncher authClient,
         IServiceProvider services)
     {

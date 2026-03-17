@@ -1,14 +1,9 @@
 namespace Astrolune.Core.Services;
 
-public interface IEventDispatcher
-{
-    /// <summary>
-    /// Emits an event to the frontend event bus.
-    /// </summary>
-    Task EmitAsync(string eventName, object payload, CancellationToken cancellationToken = default);
-}
-
-public sealed class EventDispatcher : IEventDispatcher
+/// <summary>
+/// Default implementation of IEventDispatcher.
+/// </summary>
+public sealed class EventDispatcher : IEventDispatcher, IEventDispatcherHost
 {
     private Func<string, object, CancellationToken, Task>? _sink;
 

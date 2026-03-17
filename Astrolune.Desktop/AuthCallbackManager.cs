@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using Astrolune.Core.Services;
+using Astrolune.Sdk.Services;
 
 namespace Astrolune.Desktop;
 

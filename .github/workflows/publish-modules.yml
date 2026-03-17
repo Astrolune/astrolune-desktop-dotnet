@@ -1,0 +1,88 @@
+name: Publish Modules
+
+on:
+  push:
+    tags:
+      - "module-core-v*"
+      - "module-media-v*"
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Extract module and version from tag
+        id: tag_info
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref }}" -replace "refs/tags/", ""
+          if ($tag -match "^module-core-v(.+)$") {
+            $module = "core"
+            $version = $matches[1]
+          } elseif ($tag -match "^module-media-v(.+)$") {
+            $module = "media"
+            $version = $matches[1]
+          } else {
+            Write-Error "Invalid tag format: $tag"
+            exit 1
+          }
+          Write-Output "module=$module" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Write-Output "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Pack Core Module
+        if: steps.tag_info.outputs.module == 'core'
+        shell: pwsh
+        run: |
+          dotnet pack modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj `
+            -c Release `
+            -o artifacts `
+            -p:PackageVersion=${{ steps.tag_info.outputs.version }}
+
+      - name: Pack Media Module
+        if: steps.tag_info.outputs.module == 'media'
+        shell: pwsh
+        run: |
+          dotnet pack modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj `
+            -c Release `
+            -o artifacts `
+            -p:PackageVersion=${{ steps.tag_info.outputs.version }}
+
+      - name: Publish to GitHub Packages
+        shell: pwsh
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $packages = Get-ChildItem artifacts/*.nupkg
+          if ($packages.Count -eq 0) {
+            Write-Error "No packages found in artifacts directory"
+            exit 1
+          }
+          foreach ($pkg in $packages) {
+            dotnet nuget push $pkg `
+              --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+              --api-key $env:NUGET_AUTH_TOKEN `
+              --skip-duplicate
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Failed to push package: $($pkg.Name)"
+              exit $LASTEXITCODE
+            }
+          }
+          Write-Host "Successfully published ${{ steps.tag_info.outputs.module }} module version ${{ steps.tag_info.outputs.version }}"
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: "${{ steps.tag_info.outputs.module == 'core' && 'Core Module' || 'Media Module' }} ${{ steps.tag_info.outputs.version }}"
+          body: "Published Astrolune.${{ steps.tag_info.outputs.module == 'core' && 'Core.Module' || 'Media.Module' }} version ${{ steps.tag_info.outputs.version }} to GitHub Packages"
+          draft: false
+          prerelease: false
