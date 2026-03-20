@@ -1,0 +1,11 @@
+﻿Welcome to the Astrolune installer.
+
+This setup will install the Astrolune desktop client and download required modules from GitHub Packages.
+Please keep your GitHub credentials ready if modules are private.
+
+---
+
+Добро пожаловать в установщик Astrolune.
+
+Этот мастер установит настольный клиент Astrolune и загрузит необходимые модули из GitHub Packages.
+Если модули приватные, подготовьте GitHub‑учетные данные.

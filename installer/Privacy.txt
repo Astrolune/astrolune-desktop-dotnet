@@ -1,0 +1,11 @@
+﻿Privacy Notice
+
+Astrolune may store local configuration and module data on your device to operate correctly.
+No personal data is sent without your consent.
+
+---
+
+Политика приватности
+
+Astrolune может хранить локальную конфигурацию и данные модулей на вашем устройстве.
+Личные данные не отправляются без вашего согласия.

@@ -16,6 +16,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppUrl}
 AppSupportURL={#MyAppUrl}
 AppUpdatesURL={#MyAppUrl}
+AppCopyright=Copyright (C) 2026 Astrolune
 
 ; Installation paths
 DefaultDirName={autopf}\{#MyAppName}
@@ -39,6 +40,12 @@ LZMAUseSeparateProcess=yes
 WizardStyle=modern
 WizardResizable=no
 WizardSizePercent=100,100
+DisableWelcomePage=no
+LicenseFile=installer\License.txt
+InfoBeforeFile=installer\Welcome.txt
+InfoAfterFile=installer\Privacy.txt
+WizardImageFile=installer\wizard-image.bmp
+WizardSmallImageFile=installer\wizard-small.bmp
 
 ; Black theme colors
 WizardImageBackColor=000000
@@ -70,9 +77,10 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 ; Main application files
-Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb"
+Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb,modules\\*,modules\\**"
 ; Note: Don't use "Flags: ignoreversion" on any shared system files
-#include "installer.modules.iss"
+Source: "InstallModules.ps1"; Flags: dontcopy
+Source: "modules.build.json"; Flags: dontcopy
 
 [Icons]
 ; Start Menu
@@ -91,6 +99,9 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 
 [Code]
 // Custom code for additional functionality
+var
+  ModuleOptionsPage: TInputOptionWizardPage;
+  ModuleAuthPage: TInputQueryWizardPage;
 
 function InitializeSetup(): Boolean;
 var
@@ -109,18 +120,82 @@ begin
   Result := True;
 end;
 
+procedure InitializeWizard();
+begin
+  ModuleOptionsPage := CreateInputOptionPage(
+    wpSelectTasks,
+    'Module Installation',
+    'Download modules from GitHub Packages',
+    'Modules are downloaded during setup so the installer stays lightweight.',
+    False,
+    False
+  );
+  ModuleOptionsPage.Add('Install modules during setup');
+  ModuleOptionsPage.Values[0] := True;
+
+  ModuleAuthPage := CreateInputQueryPage(
+    ModuleOptionsPage.ID,
+    'GitHub Packages Access',
+    'Provide access credentials for private modules',
+    'We will use these credentials only during installation to download the required modules.',
+    False
+  );
+  ModuleAuthPage.Add('GitHub username:');
+  ModuleAuthPage.Add('GitHub token (PAT):');
+  ModuleAuthPage.Values[0] := '';
+  ModuleAuthPage.Values[1] := '';
+  ModuleAuthPage.Edits[1].PasswordChar := '*';
+end;
+
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+  Result := False;
+  if (ModuleAuthPage <> nil) and (PageID = ModuleAuthPage.ID) then
+    Result := not ModuleOptionsPage.Values[0];
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
+var
+  ResultCode: Integer;
+  ScriptPath: String;
+  ConfigPath: String;
+  Args: String;
+  UserName: String;
+  Token: String;
 begin
   if CurStep = ssPostInstall then
   begin
-    // Additional post-installation tasks can be added here
-  end;
-end;
+    if ModuleOptionsPage.Values[0] then
+    begin
+      UserName := Trim(ModuleAuthPage.Values[0]);
+      Token := Trim(ModuleAuthPage.Values[1]);
+      if (UserName = '') or (Token = '') then
+      begin
+        MsgBox('GitHub credentials are required to download private modules. You can install modules later from the updater.', mbError, MB_OK);
+        Exit;
+      end;
 
-// Check if file exists
-function FileExists(const Path: String): Boolean;
-begin
-  Result := FileExists(Path);
+      ExtractTemporaryFile('InstallModules.ps1');
+      ExtractTemporaryFile('modules.build.json');
+      ScriptPath := ExpandConstant('{tmp}\\InstallModules.ps1');
+      ConfigPath := ExpandConstant('{tmp}\\modules.build.json');
+
+      Args := '-NoProfile -ExecutionPolicy Bypass -File "' + ScriptPath + '"' +
+        ' -ConfigPath "' + ConfigPath + '"' +
+        ' -OutputRoot "' + ExpandConstant('{app}') + '"' +
+        ' -GitHubUser "' + UserName + '"' +
+        ' -GitHubToken "' + Token + '"';
+
+      if not Exec('C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe', Args, '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+      begin
+        MsgBox('Failed to launch module installer. Please run the updater after installation.', mbError, MB_OK);
+      end
+      else if ResultCode <> 0 then
+      begin
+        MsgBox('Module installation failed with code ' + IntToStr(ResultCode) + '. You can install modules later from the updater.', mbError, MB_OK);
+      end;
+    end;
+  end;
 end;
 
 [InstallDelete]

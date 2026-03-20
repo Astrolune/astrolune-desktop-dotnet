@@ -1,0 +1,39 @@
+﻿ASTROLUNE END USER LICENSE AGREEMENT (EULA)
+
+By installing or using this software, you agree to the terms below.
+
+1. License
+Astrolune grants you a non-exclusive, non-transferable license to use this software.
+
+2. Restrictions
+You may not reverse engineer, decompile, or redistribute this software without written permission.
+
+3. Third-Party Components
+This software may include third-party components that are governed by their own licenses.
+
+4. Disclaimer
+The software is provided "as is" without warranties of any kind.
+
+5. Limitation of Liability
+Astrolune is not liable for any damages arising from the use of this software.
+
+---
+
+ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ ASTROLUNE
+
+Устанавливая или используя это программное обеспечение, вы принимаете условия ниже.
+
+1. Лицензия
+Astrolune предоставляет вам неисключительную, непередаваемую лицензию на использование ПО.
+
+2. Ограничения
+Запрещено декомпилировать, реверс‑инжинирить или распространять ПО без письменного разрешения.
+
+3. Сторонние компоненты
+ПО может включать компоненты третьих сторон с их собственными лицензиями.
+
+4. Отказ от гарантий
+ПО предоставляется "как есть" без каких-либо гарантий.
+
+5. Ограничение ответственности
+Astrolune не несет ответственности за ущерб, возникающий при использовании ПО.
