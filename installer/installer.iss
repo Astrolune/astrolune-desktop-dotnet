@@ -41,11 +41,11 @@ WizardStyle=modern
 WizardResizable=no
 WizardSizePercent=100,100
 DisableWelcomePage=no
-LicenseFile=installer\License.txt
-InfoBeforeFile=installer\Welcome.txt
-InfoAfterFile=installer\Privacy.txt
-WizardImageFile=installer\wizard-image.bmp
-WizardSmallImageFile=installer\wizard-small.bmp
+LicenseFile=License.txt
+InfoBeforeFile=Welcome.txt
+InfoAfterFile=Privacy.txt
+WizardImageFile=wizard-image.bmp
+WizardSmallImageFile=wizard-small.bmp
 
 ; Black theme colors
 WizardImageBackColor=000000
@@ -137,14 +137,12 @@ begin
     ModuleOptionsPage.ID,
     'GitHub Packages Access',
     'Provide access credentials for private modules',
-    'We will use these credentials only during installation to download the required modules.',
-    False
+    'We will use these credentials only during installation to download the required modules.'
   );
-  ModuleAuthPage.Add('GitHub username:');
-  ModuleAuthPage.Add('GitHub token (PAT):');
+  ModuleAuthPage.Add('GitHub username:', '');
+  ModuleAuthPage.Add('GitHub token (PAT):', '');
   ModuleAuthPage.Values[0] := '';
   ModuleAuthPage.Values[1] := '';
-  ModuleAuthPage.Edits[1].PasswordChar := '*';
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
