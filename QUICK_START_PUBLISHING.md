@@ -1,6 +1,6 @@
-# Quick Start Guide: Publishing Astrolune Packages
+﻿# Quick Start Guide: Publishing Astrolune Packages
 
-## 🚀 One-Minute Workflow
+## рџљЂ One-Minute Workflow
 
 ### To publish SDK v1.0.0:
 ```bash
@@ -20,9 +20,15 @@ git tag module-media-v1.0.0
 git push origin module-media-v1.0.0
 ```
 
+### To publish Auth Module v1.0.0:
+```bash
+git tag module-auth-v1.0.0
+git push origin module-auth-v1.0.0
+```
+
 That's it! The workflows handle the rest automatically.
 
-## ✅ What Happens Automatically
+## вњ… What Happens Automatically
 
 1. GitHub detects the tag push
 2. Workflow extracts version from tag name
@@ -30,27 +36,18 @@ That's it! The workflows handle the rest automatically.
 4. Publishes to `https://nuget.pkg.github.com/Astrolune/index.json`
 5. Available in Packages section
 
-## 📦 Project Structure
+## Project Structure
 
-```
-astrolune-desktop-dotnet/
-├── Astrolune.Core/             # Core library
-├── Astrolune.Desktop/          # WPF desktop app
-├── Astrolune.Sdk/              # ✨ Published as NuGet
-├── modules/
-│   ├── Astrolune.Core.Module/  # ✨ Published as NuGet
-│   └── Astrolune.Media.Module/ # ✨ Published as NuGet
-├── Astrolune.React/            # Frontend (React + Vite)
-├── .github/workflows/
-│   ├── ci.yml                  # Runs on every PR/push
-│   ├── publish-sdk.yml         # Triggered by sdk-v* tags
-│   └── publish-modules.yml     # Triggered by module-*-v* tags
-└── tools/
-    ├── ModuleSigner/           # Sign modules
-    └── ModuleManager/          # Manage modules
-```
+Main repo:
+- `astrolune-desktop-dotnet` (desktop app, frontend, tools)
 
-## 📋 Complete Publishing Examples
+Separate repos:
+- `astrolune-sdk`
+- `astrolune-core-module`
+- `astrolune-media-module`
+- `astrolune-auth-module`
+
+## Complete Publishing Examples
 
 ### Example 1: Release SDK 1.2.3
 
@@ -62,7 +59,7 @@ astrolune-desktop-dotnet/
 git tag sdk-v1.2.3
 git push origin sdk-v1.2.3
 
-# ✅ Automatic:
+# вњ… Automatic:
 # - Workflow extracts version "1.2.3"
 # - Packs Astrolune.Sdk with version 1.2.3
 # - Publishes to GitHub Packages
@@ -84,7 +81,7 @@ git push origin module-core-v2.0.0
 git tag module-media-v1.5.0
 git push origin module-media-v1.5.0
 
-# ✅ Each publishes independently
+# вњ… Each publishes independently
 ```
 
 ### Example 3: Pre-release Version
@@ -97,7 +94,7 @@ git push origin sdk-v1.0.0-beta1
 # Marked as pre-release in GitHub Packages
 ```
 
-## 📥 Consuming Published Packages
+## рџ“Ґ Consuming Published Packages
 
 ### Step 1: Create nuget.config
 
@@ -126,15 +123,15 @@ dotnet add package Astrolune.Sdk --version 1.2.3
 dotnet add package Astrolune.Sdk
 ```
 
-## 🔍 Monitoring Workflows
+## рџ”Ќ Monitoring Workflows
 
 1. Go to: `https://github.com/Astrolune/astrolune-desktop-dotnet/actions`
 2. Look for "Publish SDK" or "Publish Modules"
 3. Click on recent run to see detailed logs
-4. Green checkmark = success ✅
-5. Red X = failure ❌
+4. Green checkmark = success вњ…
+5. Red X = failure вќЊ
 
-## 🐛 Common Issues
+## рџђ› Common Issues
 
 | Issue | Solution |
 |-------|----------|
@@ -143,7 +140,7 @@ dotnet add package Astrolune.Sdk
 | Auth error | Verify GitHub token has `read:packages` and `write:packages` scopes |
 | Already exists | Workflows automatically skip with `--skip-duplicate` |
 
-## 📚 See Also
+## рџ“љ See Also
 
 - `README.md` - Main project documentation
 - `PUBLISHING_GUIDE.md` - Detailed publishing guide

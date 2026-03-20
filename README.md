@@ -1,4 +1,4 @@
-# Astrolune Desktop
+﻿# Astrolune Desktop
 
 <div align="center">
 
@@ -9,66 +9,66 @@
 
 **Modern desktop application with modular architecture**
 
-[Features](#features) • [Architecture](#architecture) • [Getting Started](#getting-started) • [Documentation](#documentation) • [License](#license)
+[Features](#features) вЂў [Architecture](#architecture) вЂў [Getting Started](#getting-started) вЂў [Documentation](#documentation) вЂў [License](#license)
 
 </div>
 
 ---
 
-## 📖 About
+## рџ“– About
 
 **Astrolune Desktop** is a modern Windows application with a hybrid architecture that combines the power of **.NET/WPF** backend with the flexibility of **React/Vite** frontend. The application provides a modular system with support for dynamically loaded modules, audio/video capture, and integration with LiveKit SFU for real-time communication.
 
-### ✨ Key Features
+### вњЁ Key Features
 
-- 🧩 **Modular Architecture** – dynamically load and update modules
-- 🎨 **Modern UI** – React + TypeScript with Material Design
-- 📹 **Media Capture** – capture screen, windows, audio and video devices
-- 🔐 **Security** – modules signed with cryptographic keys
-- 📦 **Auto Updates** – automatic module updates from GitHub
-- 🎤 **LiveKit Integration** – real-time audio/video communication
+- рџ§© **Modular Architecture** вЂ“ dynamically load and update modules
+- рџЋЁ **Modern UI** вЂ“ React + TypeScript with Material Design
+- рџ“№ **Media Capture** вЂ“ capture screen, windows, audio and video devices
+- рџ”ђ **Security** вЂ“ modules signed with cryptographic keys
+- рџ“¦ **Auto Updates** вЂ“ automatic module updates from GitHub
+- рџЋ¤ **LiveKit Integration** вЂ“ real-time audio/video communication
 
 ---
 
-## 🏗 Architecture
+## рџЏ— Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│            Astrolune.Desktop (WPF)              │
-│  ┌──────────────────┐  ┌────────────────────┐  │
-│  │  WebViewBridge   │  │  ModuleLoader      │  │
-│  │  (WebView2)      │  │  (Dynamic DLLs)    │  │
-│  └────────┬─────────┘  └────────┬───────────┘  │
-│           │                     │               │
-└───────────┼─────────────────────┼───────────────┘
-            │                     │
-┌───────────┴──────┐  ┌──────────┴──────────────────┐
-│                  │  │                             │
-│ Astrolune.React  │  │ Astrolune.Core (Contracts) │
-│ (Vite + TS)      │  │ - Media Capture            │
-│ - Redux Toolkit  │  │ - Module System            │
-│ - React Router   │  │ - Keyring Service          │
-│ - LiveKit Client │  │ - Event Dispatcher         │
-└──────────────────┘  └─────────────────────────────┘
+в”Њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ђ
+в”‚            Astrolune.Desktop (WPF)              в”‚
+в”‚  в”Њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ђ  в”Њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ђ  в”‚
+в”‚  в”‚  WebViewBridge   в”‚  в”‚  ModuleLoader      в”‚  в”‚
+в”‚  в”‚  (WebView2)      в”‚  в”‚  (Dynamic DLLs)    в”‚  в”‚
+в”‚  в””в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”¬в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”  в””в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”¬в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”  в”‚
+в”‚           в”‚                     в”‚               в”‚
+в””в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”јв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”јв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”
+            в”‚                     в”‚
+в”Њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ґв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ђ  в”Њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ґв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ђ
+в”‚                  в”‚  в”‚                             в”‚
+в”‚ Astrolune.React  в”‚  в”‚ Astrolune.Core (Contracts) в”‚
+в”‚ (Vite + TS)      в”‚  в”‚ - Media Capture            в”‚
+в”‚ - Redux Toolkit  в”‚  в”‚ - Module System            в”‚
+в”‚ - React Router   в”‚  в”‚ - Keyring Service          в”‚
+в”‚ - LiveKit Client в”‚  в”‚ - Event Dispatcher         в”‚
+в””в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”  в””в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”
 ```
 
-### 📦 Project Structure
+### рџ“¦ Project Structure
 
 | Project | Description |
 |---------|-------------|
-| **Astrolune.Core** | Shared core library (event dispatcher, keyring, storage) |
 | **Astrolune.Desktop** | WPF app (UI + module host) |
-| **Astrolune.Sdk** | SDK for building modules |
 | **Astrolune.React** | Frontend (React + TypeScript) |
-| **modules/Astrolune.Core.Module** | Core module (NuGet package) |
-| **modules/Astrolune.Media.Module** | Media capture module (NuGet package) |
 | **Astrolune.Tests** | Client/host tests |
 | **tools/ModuleSigner** | Module signing utility |
 | **tools/ModuleManager** | Module management CLI |
+| **External: astrolune-sdk** | SDK repo (NuGet package) |
+| **External: astrolune-core-module** | Core module repo (NuGet package) |
+| **External: astrolune-media-module** | Media module repo (NuGet package) |
+| **External: astrolune-auth-module** | Auth module repo (NuGet package) |
 
 ---
 
-## 🛠 Getting Started
+## рџ›  Getting Started
 
 ### Prerequisites
 
@@ -112,11 +112,11 @@ dotnet run -c Debug --project Astrolune.Desktop
 |----------|-------------|---------|
 | `ASTROLUNE_DEV_URL` | Frontend dev server URL | `http://localhost:5173` |
 | `ASTROLUNE_USE_DEVSERVER` | Enable dev server (1/0) | Auto |
-| `MODULE_PRIVATE_KEY` | Private key for module signing | — |
+| `MODULE_PRIVATE_KEY` | Private key for module signing | вЂ” |
 
 ---
 
-## 📚 Documentation
+## рџ“љ Documentation
 
 ### Building
 
@@ -133,15 +133,15 @@ dotnet publish Astrolune.Desktop -c Release -r win-x64 --self-contained -o publi
 
 ### Module System
 
-Modules are stored in `modules/` directory with the following structure:
+Runtime modules are stored in the published app under `modules/` and are bundled from NuGet packages using `installer/modules.build.json` + `tools/BundleModules.ps1`:
 
 ```
 modules/
-├── Astrolune.Core/
-│   ├── Astrolune.Core.dll      # Module main file
-│   ├── module.manifest.json     # Metadata
-│   ├── module.sig               # Cryptographic signature
-│   └── Resources/               # Localization files
+|-- Astrolune.Core.Module/
+|   |-- Astrolune.Core.Module.dll  # Module main file
+|   |-- module.manifest.json       # Metadata
+|   |-- module.sig                 # Cryptographic signature
+|   `-- Resources/                 # Localization files
 ```
 
 #### Creating a Module
@@ -156,7 +156,7 @@ modules/
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Astrolune.Sdk\Astrolune.Sdk.csproj" />
+    <PackageReference Include="Astrolune.Sdk" Version="1.0.0" />
   </ItemGroup>
 </Project>
 ```
@@ -201,7 +201,9 @@ public sealed class MyModule : IModule
 
 ---
 
-## 📦 Publishing to GitHub Packages
+## рџ“¦ Publishing to GitHub Packages
+
+SDK and modules are maintained in separate repositories (`astrolune-sdk`, `astrolune-core-module`, `astrolune-media-module`, `astrolune-auth-module`). Tags should be created in those repos to publish packages.
 
 ### SDK Publishing
 
@@ -230,6 +232,10 @@ git push origin module-core-v1.0.0
 # Publish Media Module
 git tag module-media-v1.0.0
 git push origin module-media-v1.0.0
+
+# Publish Auth Module
+git tag module-auth-v1.0.0
+git push origin module-auth-v1.0.0
 ```
 
 The workflow detects the module from tag, packs it with the correct version, and publishes it.
@@ -250,11 +256,12 @@ Install packages:
 dotnet add package Astrolune.Sdk --version 1.0.0
 dotnet add package Astrolune.Core.Module --version 1.0.0
 dotnet add package Astrolune.Media.Module --version 1.0.0
+dotnet add package Astrolune.Auth.Module --version 1.0.0
 ```
 
 ---
 
-## 🔧 Tools
+## рџ”§ Tools
 
 ### ModuleSigner
 
@@ -291,7 +298,7 @@ dotnet run --project tools/ModuleManager/ModuleManager.csproj -- apply --module 
 
 ---
 
-## 🛡️ Security
+## рџ›ЎпёЏ Security
 
 ### Module Signing
 
@@ -316,10 +323,10 @@ Modules request permissions through the permissions system:
 
 ---
 
-## 📄 License
+## рџ“„ License
 
 ```
-Copyright © 2026 Astrolune. All rights reserved.
+Copyright В© 2026 Astrolune. All rights reserved.
 
 This software and its documentation are proprietary.
 Unauthorized copying, distribution, or use is strictly prohibited.
@@ -327,7 +334,7 @@ Unauthorized copying, distribution, or use is strictly prohibited.
 
 ---
 
-## 🤝 Contributing
+## рџ¤ќ Contributing
 
 We welcome contributions to the project! Please:
 
@@ -339,7 +346,7 @@ We welcome contributions to the project! Please:
 
 ---
 
-## 📞 Support
+## рџ“ћ Support
 
 - **Website**: [astrolune.app](https://astrolune.app)
 - **Email**: support@astrolune.app
@@ -349,7 +356,7 @@ We welcome contributions to the project! Please:
 
 <div align="center">
 
-**Built with ❤️ using .NET and React**
+**Built with вќ¤пёЏ using .NET and React**
 
 ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react)
@@ -360,24 +367,19 @@ We welcome contributions to the project! Please:
 
 ## Module Bundling (Client)
 
-1. Pack local SDK/core modules:
+1. Restore module packages (requires GitHub Packages access):
 
 ```powershell
-./tools/PrepareLocalPackages.ps1
+dotnet restore tools/ModulePackages/ModulePackages.csproj
 ```
 
-2. Build the client:
+2. Build the client with bundling enabled:
 
 ```powershell
-dotnet build Astrolune.Desktop/Astrolune.Desktop.csproj -c Release
+dotnet build Astrolune.Desktop/Astrolune.Desktop.csproj -c Release -p:BundleModules=true
 ```
 
-3. Bundle modules into the output using JSON config:
-
-- Config: `installer/modules.build.json`
-- Script: `tools/BundleModules.ps1`
-
-4. Generate installer module list:
+3. Generate installer module list:
 
 ```powershell
 ./tools/GenerateInstallerModules.ps1 -ConfigPath .\installer\modules.build.json -OutputPath .\installer\installer.modules.iss

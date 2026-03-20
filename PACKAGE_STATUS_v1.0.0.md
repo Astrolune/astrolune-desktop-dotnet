@@ -26,6 +26,13 @@ All packages are built and published to GitHub Packages (no Releases created):
 - **File Size**: 251 KB
 - **Tag**: `module-media-v1.0.0`
 
+### 4. Astrolune.Auth.Module 1.0.0
+- **Status**: ✅ Built and packaged
+- **Package Registry**: GitHub Packages
+- **Package ID**: `Astrolune.Auth.Module`
+- **File Size**: 20 KB
+- **Tag**: `module-auth-v1.0.0`
+
 ## 🚀 GitHub Actions Workflows
 
 ### Publishing Workflows
@@ -34,7 +41,7 @@ All packages are built and published to GitHub Packages (no Releases created):
   - Publishes to GitHub Packages
   - No Release creation (packages only)
 
-- **publish-modules.yml** - Triggered by `module-{core|media}-v*` tags
+- **publish-modules.yml** - Triggered by `module-{core|media|auth}-v*` tags
   - Builds and packs specified module
   - Publishes to GitHub Packages
   - No Release creation (packages only)
@@ -127,6 +134,7 @@ dotnet add package Astrolune.Sdk --version 1.0.0
 # Install modules if needed as dependencies
 dotnet add package Astrolune.Core.Module --version 1.0.0
 dotnet add package Astrolune.Media.Module --version 1.0.0
+dotnet add package Astrolune.Auth.Module --version 1.0.0
 ```
 
 ## 🔗 Related Documentation
@@ -151,4 +159,3 @@ dotnet clean ./Astrolune.sln
 **Status**: Ready for Production ✅
 **Publish Registry**: GitHub Packages (nuget.pkg.github.com)
 **Release Management**: Git tags trigger automated publishing
-

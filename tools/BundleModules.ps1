@@ -24,12 +24,36 @@ foreach ($module in $config.modules) {
         throw "Module entry missing id."
     }
 
-    if ([string]::IsNullOrWhiteSpace($module.packagePath)) {
-        throw "Module $($module.id) missing packagePath."
+    $packagePath = $null
+    if (-not [string]::IsNullOrWhiteSpace($module.packagePath)) {
+        $candidate = Join-Path $cfgDir $module.packagePath
+        if (Test-Path $candidate) {
+            $packagePath = (Resolve-Path $candidate -ErrorAction Stop).Path
+        }
     }
 
-    $packagePath = Join-Path $cfgDir $module.packagePath
-    $packagePath = (Resolve-Path $packagePath -ErrorAction Stop).Path
+    if ($null -eq $packagePath -and
+        -not [string]::IsNullOrWhiteSpace($module.packageId) -and
+        -not [string]::IsNullOrWhiteSpace($module.packageVersion)) {
+        $globalPackages = $env:NUGET_PACKAGES
+        if ([string]::IsNullOrWhiteSpace($globalPackages)) {
+            $globalPackages = Join-Path $env:USERPROFILE ".nuget\\packages"
+        }
+
+        $packageIdLower = $module.packageId.ToLowerInvariant()
+        $packageFileName = "$packageIdLower.$($module.packageVersion).nupkg"
+        $candidate = Join-Path $globalPackages $packageIdLower
+        $candidate = Join-Path $candidate $module.packageVersion
+        $candidate = Join-Path $candidate $packageFileName
+
+        if (Test-Path $candidate) {
+            $packagePath = $candidate
+        }
+    }
+
+    if ($null -eq $packagePath) {
+        throw "Module $($module.id) missing packagePath (or packageId/packageVersion not restored)."
+    }
 
     $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("Astrolune\\module-bundle\\" + [System.Guid]::NewGuid().ToString("N"))
     New-Item -ItemType Directory -Path $tempRoot -Force | Out-Null

@@ -12,6 +12,7 @@ param(
 
 $packages = @(
     "Astrolune.Media.Module.1.0.0.nupkg",
+    "Astrolune.Auth.Module.1.0.0.nupkg",
     "Astrolune.Core.Module.1.0.0.nupkg",
     "Astrolune.Sdk.1.0.0.nupkg"
 )

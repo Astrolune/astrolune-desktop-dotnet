@@ -9,11 +9,11 @@
 
 [Setup]
 ; Basic settings
-AppId={A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+AppId={{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-AppURL={#MyAppUrl}
+AppPublisherURL={#MyAppUrl}
 AppSupportURL={#MyAppUrl}
 AppUpdatesURL={#MyAppUrl}
 
@@ -38,10 +38,9 @@ LZMAUseSeparateProcess=yes
 ; Wizard style - Modern with black theme
 WizardStyle=modern
 WizardResizable=no
-WizardSizePercent=100,80
+WizardSizePercent=100,100
 
 ; Black theme colors
-WizardColor=000000
 WizardImageBackColor=000000
 WizardImageStretch=yes
 
@@ -71,10 +70,8 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 ; Main application files
-Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.pdb"
 ; Note: Don't use "Flags: ignoreversion" on any shared system files
-; Exclude app/ directory from wildcard (will be included separately)
-Excludes: "*.pdb"
 #include "installer.modules.iss"
 
 [Icons]
@@ -130,9 +127,11 @@ end;
 ; Clean up old files before installation
 Type: filesandordirs; Name: "{app}\modules\Astrolune.Core.Module";
 Type: filesandordirs; Name: "{app}\modules\Astrolune.Media.Module";
+Type: filesandordirs; Name: "{app}\modules\Astrolune.Auth.Module";
 
 [UninstallDelete]
 ; Clean up module data on uninstall
 Type: filesandordirs; Name: "{userappdata}\Astrolune\modules\Astrolune.Core.Module";
 Type: filesandordirs; Name: "{userappdata}\Astrolune\modules\Astrolune.Media.Module";
+Type: filesandordirs; Name: "{userappdata}\Astrolune\modules\Astrolune.Auth.Module";
 Type: filesandordirs; Name: "{userappdata}\Astrolune\Keyring";

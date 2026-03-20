@@ -594,6 +594,7 @@ public sealed class ModuleUpdater
         {
             "astrolune.core.module" => "module-core-v",
             "astrolune.media.module" => "module-media-v",
+            "astrolune.auth.module" => "module-auth-v",
             _ => $"module-{moduleIdLower}-v"
         };
         

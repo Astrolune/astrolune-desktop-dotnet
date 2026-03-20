@@ -2,11 +2,21 @@
   "modules": [
     {
       "id": "Astrolune.Core.Module",
-      "packagePath": "..\\artifacts\\Astrolune.Core.Module.1.0.0.nupkg"
+      "packagePath": "..\\artifacts\\Astrolune.Core.Module.1.0.0.nupkg",
+      "packageId": "Astrolune.Core.Module",
+      "packageVersion": "1.0.0"
     },
     {
       "id": "Astrolune.Media.Module",
-      "packagePath": "..\\artifacts\\Astrolune.Media.Module.1.0.0.nupkg"
+      "packagePath": "..\\artifacts\\Astrolune.Media.Module.1.0.0.nupkg",
+      "packageId": "Astrolune.Media.Module",
+      "packageVersion": "1.0.0"
+    },
+    {
+      "id": "Astrolune.Auth.Module",
+      "packagePath": "..\\artifacts\\Astrolune.Auth.Module.1.0.0.nupkg",
+      "packageId": "Astrolune.Auth.Module",
+      "packageVersion": "1.0.0"
     }
   ]
 }

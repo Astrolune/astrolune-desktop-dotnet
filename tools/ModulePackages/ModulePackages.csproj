@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Astrolune.Core.Module" Version="1.0.0" />
+    <PackageReference Include="Astrolune.Media.Module" Version="1.0.0" />
+    <PackageReference Include="Astrolune.Auth.Module" Version="1.0.0" />
+  </ItemGroup>
+</Project>

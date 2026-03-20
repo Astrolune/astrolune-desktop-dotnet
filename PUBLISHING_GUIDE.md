@@ -9,6 +9,9 @@ The project has 3 main components that are published as NuGet packages:
 1. **Astrolune.SDK** - Public API and interfaces for module development
 2. **Astrolune.Core.Module** - Core module (bundled with desktop app)
 3. **Astrolune.Media.Module** - Media capture module (separate NuGet package)
+4. **Astrolune.Auth.Module** - Auth module (separate NuGet package)
+
+> Note: SDK and modules are maintained in separate repositories. Tag and publish from their respective repos.
 
 ## Publishing Workflows
 
@@ -52,7 +55,7 @@ git push origin module-core-v1.0.0
 
 - The `publish-modules.yml` workflow is triggered
 - Workflow detects `module-core` tag and extracts version `1.0.0`
-- Builds and packs only `modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj`
+- Builds and packs the `Astrolune.Core.Module` project in its repo
 - Publishes as `Astrolune.Core.Module` version `1.0.0`
 - Creates a GitHub Release with the name "Core Module 1.0.0"
 
@@ -72,9 +75,29 @@ git push origin module-media-v1.0.0
 
 - The `publish-modules.yml` workflow is triggered
 - Workflow detects `module-media` tag and extracts version `1.0.0`
-- Builds and packs only `modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj`
+- Builds and packs the `Astrolune.Media.Module` project in its repo
 - Publishes as `Astrolune.Media.Module` version `1.0.0`
 - Creates a GitHub Release with the name "Media Module 1.0.0"
+
+### 4. Publishing Auth Module
+
+The Auth Module contains authentication and secure token storage.
+
+**To publish:**
+
+```bash
+# Create a tag in format module-auth-v<VERSION>
+git tag module-auth-v1.0.0
+git push origin module-auth-v1.0.0
+```
+
+**What happens:**
+
+- The `publish-modules.yml` workflow is triggered
+- Workflow detects `module-auth` tag and extracts version `1.0.0`
+- Builds and packs only `Astrolune.Auth.Module`
+- Publishes as `Astrolune.Auth.Module` version `1.0.0`
+- Creates a GitHub Release with the name "Auth Module 1.0.0"
 
 ## Using Published Packages
 
@@ -116,6 +139,9 @@ dotnet add package Astrolune.Core.Module --version 1.0.0
 
 # Install Media Module (if needed as dependency)
 dotnet add package Astrolune.Media.Module --version 1.0.0
+
+# Install Auth Module (if needed as dependency)
+dotnet add package Astrolune.Auth.Module --version 1.0.0
 ```
 
 ### Alternative: Using Environment Variables
@@ -145,6 +171,7 @@ The workflows use git tags to trigger publishing:
 | `sdk-v*` | Astrolune.SDK | Push tag starting with `sdk-v` |
 | `module-core-v*` | Astrolune.Core.Module | Push tag starting with `module-core-v` |
 | `module-media-v*` | Astrolune.Media.Module | Push tag starting with `module-media-v` |
+| `module-auth-v*` | Astrolune.Auth.Module | Push tag starting with `module-auth-v` |
 
 ### Version Extraction Logic
 

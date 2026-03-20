@@ -45,6 +45,12 @@ dotnet nuget push artifacts/Astrolune.Media.Module.1.0.0.nupkg `
   --api-key $TOKEN `
   --skip-duplicate
 
+# Publish Auth Module
+dotnet nuget push artifacts/Astrolune.Auth.Module.1.0.0.nupkg `
+  --source "https://nuget.pkg.github.com/Astrolune/index.json" `
+  --api-key $TOKEN `
+  --skip-duplicate
+
 # Publish Core Module
 dotnet nuget push artifacts/Astrolune.Core.Module.1.0.0.nupkg `
   --source "https://nuget.pkg.github.com/Astrolune/index.json" `
@@ -78,6 +84,7 @@ You should see:
 - ✅ Astrolune.Sdk
 - ✅ Astrolune.Core.Module
 - ✅ Astrolune.Media.Module
+- ✅ Astrolune.Auth.Module
 
 ## Consuming Published Packages
 
@@ -113,6 +120,7 @@ When you push tags, GitHub Actions automatically publishes:
 - `sdk-v1.0.0` → publishes SDK via publish-sdk.yml
 - `module-core-v1.0.0` → publishes Core Module via publish-modules.yml
 - `module-media-v1.0.0` → publishes Media Module via publish-modules.yml
+- `module-auth-v1.0.0` → publishes Auth Module via publish-modules.yml
 
 The workflows use `${{ secrets.GITHUB_TOKEN }}` which is automatically provided by GitHub Actions.
 

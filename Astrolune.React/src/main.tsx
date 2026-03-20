@@ -15,8 +15,6 @@ import { Toast } from "./components"
 
 import { FriendsPage } from "./pages/friends/friends"
 import { ChatPage } from "./pages/chat/chat"
-import { AuthPage } from "./pages/auth/auth"
-import { AnonymousRoute, ProtectedRoute } from "./pages/auth/auth-guards"
 import { CallProvider } from "./contexts/call-context"
 import { AuthProvider } from "./contexts/auth-context"
 import "./scss/app.scss"
@@ -58,11 +56,7 @@ const Root = () => {
       <AuthProvider>
         <HashRouter>
           <Routes>
-            <Route element={<AnonymousRoute />}>
-              <Route path="/auth" element={<AuthPage />} />
-            </Route>
-
-            <Route element={<ProtectedRoute />}>
+            {/* <Route element={<ProtectedRoute />}> */}
               <Route
                 element={
                   <CallProvider>
@@ -76,7 +70,7 @@ const Root = () => {
                 <Route path="/call" element={<Navigate to="/" replace />} />
                 <Route path="/call/:roomId" element={<Navigate to="/" replace />} />
               </Route>
-            </Route>
+            {/* </Route> */}
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

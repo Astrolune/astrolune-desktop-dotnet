@@ -24,6 +24,15 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Configure GitHub Packages
+        shell: pwsh
+        run: |
+          dotnet nuget add source "https://nuget.pkg.github.com/Astrolune/index.json" `
+            --name "github-ci" `
+            --username "${{ github.actor }}" `
+            --password "${{ secrets.GITHUB_TOKEN }}" `
+            --store-password-in-clear-text
+
       - name: Install Frontend Dependencies
         shell: pwsh
         run: |
@@ -40,23 +49,9 @@ jobs:
         shell: pwsh
         run: dotnet restore ./Astrolune.sln
 
-      - name: Build SDK
-        shell: pwsh
-        run: |
-          dotnet build Astrolune.Sdk/Astrolune.Sdk.csproj `
-            -c Release `
-            --no-restore `
-            -v minimal
-
-      - name: Build Modules
-        shell: pwsh
-        run: |
-          dotnet build modules/Astrolune.Media.Module/Astrolune.Media.Module.csproj -c Release --no-restore -v minimal
-          dotnet build modules/Astrolune.Core.Module/Astrolune.Core.Module.csproj -c Release --no-restore -v minimal
-
       - name: Build Solution
         shell: pwsh
-        run: dotnet build ./Astrolune.sln -c Release --no-restore -v minimal
+        run: dotnet build ./Astrolune.sln -c Release --no-restore -p:BundleModules=false -v minimal
 
       - name: Run Tests
         shell: pwsh
@@ -69,4 +64,3 @@ jobs:
           name: test-results
           path: "**/TestResults/"
           retention-days: 7
-

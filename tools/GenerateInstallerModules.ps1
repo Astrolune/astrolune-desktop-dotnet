@@ -10,6 +10,7 @@ if (-not (Test-Path $ConfigPath)) {
     throw "Config not found: $ConfigPath"
 }
 
+$cfgDir = Split-Path -Parent $ConfigPath
 $config = Get-Content -Raw $ConfigPath | ConvertFrom-Json
 if ($null -eq $config.modules) {
     throw "Config must contain 'modules' array."
@@ -25,7 +26,10 @@ foreach ($module in $config.modules) {
 
     $moduleId = $module.id
     $lines.Add("Source: `"..\\publish\\modules\\$moduleId\\*`"; DestDir: `"{app}\\modules\\$moduleId`"; Flags: ignoreversion recursesubdirs createallsubdirs")
-    $lines.Add("Source: `"..\\publish\\modules\\$moduleId\\module.sig`"; DestDir: `"{app}\\modules\\$moduleId`"; Flags: ignoreversion; Check: FileExists(`"..\\publish\\modules\\$moduleId\\module.sig`")")
+    $sigPath = Join-Path $cfgDir ("..\\publish\\modules\\$moduleId\\module.sig")
+    if (Test-Path $sigPath) {
+        $lines.Add("Source: `"..\\publish\\modules\\$moduleId\\module.sig`"; DestDir: `"{app}\\modules\\$moduleId`"; Flags: ignoreversion; Check: FileExists('..\\publish\\modules\\$moduleId\\module.sig')")
+    }
 }
 
 $lines | Set-Content -Path $OutputPath -Encoding UTF8

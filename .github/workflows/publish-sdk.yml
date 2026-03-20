@@ -8,6 +8,7 @@ on:
 jobs:
   publish:
     runs-on: windows-latest
+    if: ${{ hashFiles('Astrolune.Sdk/**') != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

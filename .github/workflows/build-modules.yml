@@ -17,6 +17,7 @@ jobs:
   build-media-module:
     name: Build Media Module
     runs-on: windows-latest
+    if: ${{ hashFiles('modules/Astrolune.Media.Module/**') != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,6 +53,7 @@ jobs:
     name: Build Core Module
     needs: build-media-module
     runs-on: windows-latest
+    if: ${{ hashFiles('modules/Astrolune.Core.Module/**') != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,6 +88,7 @@ jobs:
   build-sdk:
     name: Build SDK
     runs-on: windows-latest
+    if: ${{ hashFiles('Astrolune.Sdk/**') != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

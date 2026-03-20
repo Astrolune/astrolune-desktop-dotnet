@@ -65,7 +65,9 @@ const resolveAuthApiBaseUrl = () => {
 const AUTH_API_BASE_URL = resolveAuthApiBaseUrl()
 
 const isTauriRuntime = () =>
-  typeof window !== "undefined" && Object.prototype.hasOwnProperty.call(window, "__TAURI_INTERNALS__")
+  typeof window !== "undefined" &&
+  (Boolean((window as Record<string, unknown>).__TAURI__) ||
+    Boolean((window as Record<string, unknown>).__TAURI_INTERNALS__?.invoke))
 
 export const isDesktopBridgeAvailable = () =>
   typeof window !== "undefined" && Boolean(window.chrome?.webview)
@@ -232,6 +234,18 @@ const getKeyringModule = async () => {
 }
 
 const readPassword = async (key: string) => {
+  if (isDesktopBridgeAvailable()) {
+    try {
+      return await invoke<string | null>("keyring_get_password", {
+        service: TOKEN_STORE_SERVICE,
+        key,
+      })
+    } catch (error) {
+      console.warn("Failed to read token from desktop keyring.", error)
+      return null
+    }
+  }
+
   const keyring = await getKeyringModule()
   if (!keyring) {
     return null
@@ -247,6 +261,26 @@ const readPassword = async (key: string) => {
 
 const persistTokens = async (tokens: AuthTokens) => {
   cachedTokens = tokens
+
+  if (isDesktopBridgeAvailable()) {
+    try {
+      await Promise.all([
+        invoke("keyring_set_password", {
+          service: TOKEN_STORE_SERVICE,
+          key: TOKEN_STORE_ACCESS_KEY,
+          password: tokens.accessToken,
+        }),
+        invoke("keyring_set_password", {
+          service: TOKEN_STORE_SERVICE,
+          key: TOKEN_STORE_REFRESH_KEY,
+          password: tokens.refreshToken,
+        }),
+      ])
+    } catch (error) {
+      console.warn("Failed to persist tokens in desktop keyring.", error)
+    }
+    return
+  }
 
   if (!isTauriRuntime()) {
     return
@@ -293,6 +327,24 @@ const hydrateTokens = async () => {
 export const clearStoredTokens = async () => {
   cachedTokens = null
   tokensHydrated = true
+
+  if (isDesktopBridgeAvailable()) {
+    try {
+      await Promise.all([
+        invoke("keyring_delete_password", {
+          service: TOKEN_STORE_SERVICE,
+          key: TOKEN_STORE_ACCESS_KEY,
+        }).catch(() => null),
+        invoke("keyring_delete_password", {
+          service: TOKEN_STORE_SERVICE,
+          key: TOKEN_STORE_REFRESH_KEY,
+        }).catch(() => null),
+      ])
+    } catch (error) {
+      console.warn("Failed to clear desktop keyring tokens.", error)
+    }
+    return
+  }
 
   if (!isTauriRuntime()) {
     return

@@ -50,10 +50,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Pack Local SDK
+      - name: Configure GitHub Packages
         shell: pwsh
         run: |
-          ./tools/PrepareLocalPackages.ps1
+          dotnet nuget add source "https://nuget.pkg.github.com/Astrolune/index.json" `
+            --name "github-ci" `
+            --username "${{ github.actor }}" `
+            --password "${{ secrets.GITHUB_TOKEN }}" `
+            --store-password-in-clear-text
 
       - name: Install Frontend Dependencies
         run: |
@@ -78,7 +82,7 @@ jobs:
             exit 0
           }
 
-          $modules = @('Astrolune.Core.Module', 'Astrolune.Media.Module')
+          $modules = @('Astrolune.Core.Module', 'Astrolune.Media.Module', 'Astrolune.Auth.Module')
           foreach ($module in $modules) {
             $manifest = "modules\$module\bin\Release\$module\module.manifest.json"
             $dll = "modules\$module\bin\Release\$module\$module.dll"
@@ -94,7 +98,7 @@ jobs:
           }
 
       - name: Build Desktop App
-        run: dotnet build Astrolune.Desktop/Astrolune.Desktop.csproj -c Release --no-restore
+        run: dotnet build Astrolune.Desktop/Astrolune.Desktop.csproj -c Release --no-restore -p:BundleModules=false
 
       - name: Run Tests
         run: dotnet test ./Astrolune.sln -c Release --no-build --verbosity normal
@@ -109,6 +113,11 @@ jobs:
             -p:PublishReadyToRun=true `
             -p:Version=${{ steps.version.outputs.version }} `
             -o ${{ env.RELEASE_DIR }}
+
+      - name: Restore Module Packages
+        shell: pwsh
+        run: |
+          dotnet restore ./tools/ModulePackages/ModulePackages.csproj
 
       - name: Bundle Modules
         shell: pwsh

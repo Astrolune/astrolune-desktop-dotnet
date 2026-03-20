@@ -26,6 +26,8 @@
     
     <!-- Dev server запускается только в Debug режиме вне Visual Studio -->
     <AstroluneStartDevServer Condition="'$(Configuration)'=='Debug' and '$(BuildingInsideVisualStudio)'!='true' and '$(DesignTimeBuild)'!='true'">true</AstroluneStartDevServer>
+    <!-- Module bundling is optional: enabled only when explicitly requested -->
+    <BundleModules Condition="'$(BundleModules)'==''">false</BundleModules>
   </PropertyGroup>
 
   <!-- Запуск Vite dev server в режиме разработки -->
@@ -64,15 +66,14 @@
     <PackageReference Include="NSec.Cryptography" Version="24.4.0" />
   </ItemGroup>
 
-  <!-- Bundle selected modules into the app output using JSON config -->
-  <Target Name="PackModulesForBundle" BeforeTargets="BundleModules" Condition="'$(Configuration)'=='Release' and '$(DesignTimeBuild)'!='true'">
-    <Exec Command="dotnet msbuild &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Core.Module\Astrolune.Core.Module.csproj&quot; -t:GenerateMinifiedManifestForPack -p:Configuration=$(Configuration)" />
-    <Exec Command="dotnet pack &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Core.Module\Astrolune.Core.Module.csproj&quot; -c $(Configuration) -o &quot;$(MSBuildThisFileDirectory)..\artifacts&quot;" />
-    <Exec Command="dotnet msbuild &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Media.Module\Astrolune.Media.Module.csproj&quot; -t:GenerateMinifiedManifestForPack -p:Configuration=$(Configuration)" />
-    <Exec Command="dotnet pack &quot;$(MSBuildThisFileDirectory)..\modules\Astrolune.Media.Module\Astrolune.Media.Module.csproj&quot; -c $(Configuration) -o &quot;$(MSBuildThisFileDirectory)..\artifacts&quot;" />
+  <!-- Restore module packages when bundling -->
+  <Target Name="RestoreModulePackages" BeforeTargets="BundleModules"
+          Condition="'$(Configuration)'=='Release' and '$(BundleModules)'=='true' and '$(DesignTimeBuild)'!='true'">
+    <Exec Command="dotnet restore &quot;$(MSBuildThisFileDirectory)..\tools\ModulePackages\ModulePackages.csproj&quot;" />
   </Target>
 
-  <Target Name="BundleModules" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
+  <Target Name="BundleModules" AfterTargets="Build"
+          Condition="'$(Configuration)'=='Release' and '$(BundleModules)'=='true' and '$(DesignTimeBuild)'!='true'">
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\tools\BundleModules.ps1&quot; -ConfigPath &quot;$(MSBuildThisFileDirectory)..\installer\modules.build.json&quot; -OutputRoot &quot;$(TargetDir.TrimEnd('\\'))&quot;" />
   </Target>
 </Project>
